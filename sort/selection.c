@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// adding comment for testing
+
 int main(void)
 {
     int arr[10] = {7, 4, 5, 8 ,3 ,9 ,0 ,1, 2, 6}, n = 10, temp = 0;
