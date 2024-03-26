@@ -11,23 +11,26 @@ int main(void)
     }
     printf("\n");
 
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < n-1; i++)
     {
         int min = i;
-        for(int j = i + 1; j < n - 2; j++)
+        for(int j = i + 1; j < n; j++)
         {
-            if (arr[min] > arr[j])
+            if (arr[j] < arr[min])
             {
                 min = j;
             }
-            if (min != i)
+            /* if (min != i)
             {
                 temp = arr[i];
                 arr[i] = arr[min];
                 arr[min] = temp;
-            }
+            }*/
         }
-        printf("%i ", arr[i]);
+        // printf("%i ", arr[i]);
+        temp = arr[i];
+        arr[i] = arr[min];
+        arr[min] = temp;
     }
     printf("\n");
     for (int i = 0; i < n; i++)
