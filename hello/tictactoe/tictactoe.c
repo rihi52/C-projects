@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-int choices[3][3] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8} };
+char *choices = "012345678";
+char choice;
 int position, turns;
 
 void print_grid(void);
@@ -31,7 +32,7 @@ int main(void)
         for(int j = 0; j < 3; j++)
         {
             printf("Enter your choice: ");
-            scanf("%i", &choices[i][j]);
+            scanf("%c", &choices[i]);
             print_grid();
         }
     }
@@ -41,21 +42,19 @@ void print_grid(void)
 {
     for(int i = 0; i < 3; i++)
     {
-        for(int j = 0; j < 3; j++)
+        if (i < 2 || (i > 2 && i < 5) || (i < 8 && i > 5))
         {
-            printf(" %i ", choices[i][j]);
-            if (j < 2)
-            {
-                printf("|");
-            }
-            else
-            {
-                printf("\n");
-            }
+            printf("|");
         }
-        if (i < 2)
+        else if (i == 2 || i == 5)
         {
+            printf("\n");
             printDivider();
+            printf("\n");
+        }
+        else if (i == 8)
+        {
+            printf("\n");
         }
     }
     
