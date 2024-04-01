@@ -2,8 +2,9 @@
 #include <math.h>
 
 char *choices = "012345678";
-char choice;
-int position, turns;
+int choice;
+int position, turns = 9;
+char a = '0', b = '1', c = '2', d = '3', e = '4', f = '5', g = '6', h = '7', k = '8';
 
 void print_grid(void);
 void printDivider(void);
@@ -27,7 +28,56 @@ int main(void)
     
     print_grid();
 
-    for(int i = 0; i < 3; i++)
+    while(turns > 0)
+    {
+        printf("Enter your choice: ");
+        scanf("%i", &choice);
+        if (choice == 0)
+        {
+            a = 'X';
+        }
+        else if (choice == 1)
+        {
+            b = 'X';
+        }
+        else if (choice == 2)
+        {
+            c = 'X';
+        }
+        else if (choice == 3)
+        {
+            d = 'X';
+        }
+        else if (choice == 4)
+        {
+            e = 'X';
+        }
+        else if (choice == 5)
+        {
+            f = 'X';
+        }
+        else if (choice == 7)
+        {
+            g = 'X';
+        }
+        else if (choice == 8)
+        {
+            h = 'X';
+        }
+        else if (choice == 9)
+        {
+            k = 'X';
+        }
+        else
+        {
+            printf("Choice not valid");
+        }
+        print_grid();
+        turns--;
+        
+    }
+
+    /*for(int i = 0; i < 3; i++)
     {
         for(int j = 0; j < 3; j++)
         {
@@ -35,29 +85,16 @@ int main(void)
             scanf("%c", &choices[i]);
             print_grid();
         }
-    }
+    }*/
 }
 
 void print_grid(void)
 {
-    for(int i = 0; i < 3; i++)
-    {
-        if (i < 2 || (i > 2 && i < 5) || (i < 8 && i > 5))
-        {
-            printf("|");
-        }
-        else if (i == 2 || i == 5)
-        {
-            printf("\n");
-            printDivider();
-            printf("\n");
-        }
-        else if (i == 8)
-        {
-            printf("\n");
-        }
-    }
-    
+    printf(" %c | %c | %c\n", a, b, c);
+    printDivider();
+    printf(" %c | %c | %c\n", d, e, f);
+    printDivider();
+    printf(" %c | %c | %c\n", g, h, k);
 }
 
 void printDivider(void)
