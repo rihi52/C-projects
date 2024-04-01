@@ -2,8 +2,8 @@
 #include <math.h>
 
 char *choices = "012345678";
-int choice;
-int position, turns = 9;
+int pChoice;
+int position = 0, turns = 9;
 char a = '0', b = '1', c = '2', d = '3', e = '4', f = '5', g = '6', h = '7', k = '8';
 
 void print_grid(void);
@@ -12,8 +12,12 @@ void printDivider(void);
 int main(void)
 {
     printf("Welcome to Tic Tac Toe!\n");
-    printf("Choose if you want to go first (1) or second (2): ");
-    scanf("%i", &position);
+    do
+    {
+        printf("Choose if you want to go first (1) or second (2): ");
+        scanf("%i", &position);
+    }
+    while (position < 1 || position > 2);
 
     if (position == 1)
     {
@@ -31,40 +35,40 @@ int main(void)
     while(turns > 0)
     {
         printf("Enter your choice: ");
-        scanf("%i", &choice);
-        if (choice == 0)
+        scanf("%i", &pChoice);
+        if (pChoice == 0)
         {
             a = 'X';
         }
-        else if (choice == 1)
+        else if (pChoice == 1)
         {
             b = 'X';
         }
-        else if (choice == 2)
+        else if (pChoice == 2)
         {
             c = 'X';
         }
-        else if (choice == 3)
+        else if (pChoice == 3)
         {
             d = 'X';
         }
-        else if (choice == 4)
+        else if (pChoice == 4)
         {
             e = 'X';
         }
-        else if (choice == 5)
+        else if (pChoice == 5)
         {
             f = 'X';
         }
-        else if (choice == 7)
+        else if (pChoice == 6)
         {
             g = 'X';
         }
-        else if (choice == 8)
+        else if (pChoice == 7)
         {
             h = 'X';
         }
-        else if (choice == 9)
+        else if (pChoice == 8)
         {
             k = 'X';
         }
