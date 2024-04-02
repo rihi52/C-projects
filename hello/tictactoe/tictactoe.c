@@ -1,16 +1,23 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <math.h>
 
-char *choices = "012345678";
-int pChoice;
+// char *choices = "012345678";
+int playerChoice = 0, comChoice = 0;
 int position = 0, turns = 9;
-char a = '0', b = '1', c = '2', d = '3', e = '4', f = '5', g = '6', h = '7', k = '8';
+int choices[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+char a = '1', b = '2', c = '3', d = '4', e = '5', f = '6', g = '7', h = '8', k = '9', first = 'X', second = 'O';
 
 void print_grid(void);
 void printDivider(void);
+int checkChoice(int a);
+int computerChoice(void);
+void assignChoice(int choice, char symbol);
 
 int main(void)
 {
+    srand(time(0));
     printf("Welcome to Tic Tac Toe!\n");
     do
     {
@@ -34,62 +41,67 @@ int main(void)
 
     while(turns > 0)
     {
-        printf("Enter your choice: ");
-        scanf("%i", &pChoice);
-        if (pChoice == 0)
+        if (position == 1)
         {
-            a = 'X';
+            if (turns % 2 != 0)
+            {
+                printf("Enter your choice: ");
+                scanf("%i", &playerChoice);
+                if (checkChoice(playerChoice) == 0)
+                {
+                    assignChoice(playerChoice, first);
+                    print_grid();
+                    turns--;
+                }
+                else
+                {
+                    printf("Invalid Choice\n");
+                }
+            }
+            else
+            {
+                do
+                {
+                    comChoice = computerChoice();
+                } while ( checkChoice(comChoice) == 1);
+                assignChoice(comChoice, second);
+                print_grid();
+                turns--;
+            }
         }
-        else if (pChoice == 1)
+        else if(position == 2)
         {
-            b = 'X';
-        }
-        else if (pChoice == 2)
-        {
-            c = 'X';
-        }
-        else if (pChoice == 3)
-        {
-            d = 'X';
-        }
-        else if (pChoice == 4)
-        {
-            e = 'X';
-        }
-        else if (pChoice == 5)
-        {
-            f = 'X';
-        }
-        else if (pChoice == 6)
-        {
-            g = 'X';
-        }
-        else if (pChoice == 7)
-        {
-            h = 'X';
-        }
-        else if (pChoice == 8)
-        {
-            k = 'X';
+            if (turns % 2 == 0)
+            {
+                printf("Enter your choice: ");
+                scanf("%i", &playerChoice);
+                if (checkChoice(playerChoice) == 0)
+                {
+                    assignChoice(playerChoice, first);
+                    print_grid();
+                    turns--;
+                }
+                else
+                {
+                    printf("Invalid Choice\n");
+                }
+            }
+            else
+            {
+                do
+                {
+                    comChoice = computerChoice();
+                } while ( checkChoice(comChoice) == 1);
+                assignChoice(comChoice, second);
+                print_grid();
+                turns--;
+            }
         }
         else
         {
-            printf("Choice not valid");
-        }
-        print_grid();
-        turns--;
-        
+            return 1;
+        }        
     }
-
-    /*for(int i = 0; i < 3; i++)
-    {
-        for(int j = 0; j < 3; j++)
-        {
-            printf("Enter your choice: ");
-            scanf("%c", &choices[i]);
-            print_grid();
-        }
-    }*/
 }
 
 void print_grid(void)
@@ -104,4 +116,72 @@ void print_grid(void)
 void printDivider(void)
 {
     printf("-----------\n");
+}
+
+int checkChoice(int a)
+{
+    for(int i = 0; i < 9; i++)
+    {
+        if (a > 9 || a < 1)
+        {
+            return 1;
+        }
+        else if (a == choices[i])
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int computerChoice(void)
+{
+    int lower = 0, upper = 8, count = 1;
+    int num;
+    num = (rand() % (upper - lower + 1)) + lower;
+    return num;
+}
+
+void assignChoice(int choice, char symbol)
+{
+    if (choice == 1)
+    {
+        a = symbol;
+    }
+    else if (choice == 2)
+    {
+        b = symbol;
+    }
+    else if (choice == 3)
+    {
+        c = symbol;
+    }
+    else if (choice == 4)
+    {
+        d = symbol;
+    }
+    else if (choice == 5)
+    {
+        e = symbol;
+    }
+    else if (choice == 6)
+    {
+        f = symbol;
+    }
+    else if (choice == 7)
+    {
+        g = symbol;
+    }
+    else if (choice == 8)
+    {
+        h = symbol;
+    }
+    else if (choice == 9)
+    {
+        k = symbol;
+    }
 }
