@@ -5,7 +5,7 @@
 
 // char *choices = "012345678";
 int playerChoice = 0, comChoice = 0;
-int position = 0, turns = 9;
+int position = 0, turns = 8;
 int choices[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 char a = '1', b = '2', c = '3', d = '4', e = '5', f = '6', g = '7', h = '8', k = '9', first = 'X', second = 'O';
 
@@ -39,24 +39,32 @@ int main(void)
     
     print_grid();
 
-    while(turns > 0)
+    while(turns >= 0)
     {
         if (position == 1)
         {
-            if (turns % 2 != 0)
+            if (turns % 2 == 0)
             {
+                do{
                 printf("Enter your choice: ");
                 scanf("%i", &playerChoice);
+                printf("Your choice is: %i\n", playerChoice);
+                } while (checkChoice(playerChoice) == 1);
                 if (checkChoice(playerChoice) == 0)
                 {
                     assignChoice(playerChoice, first);
                     print_grid();
+                    choices[turns] = playerChoice;
+                    for(int i = 0; i < 9; i++){
+                        printf("%i ", choices[i]);
+                    }
                     turns--;
                 }
                 else
                 {
                     printf("Invalid Choice\n");
                 }
+                printf("\n");
             }
             else
             {
@@ -64,12 +72,18 @@ int main(void)
                 {
                     comChoice = computerChoice();
                 } while ( checkChoice(comChoice) == 1);
+                printf("PC choice is: %i\n", comChoice);
                 assignChoice(comChoice, second);
+                choices[turns] = comChoice;
                 print_grid();
+                for(int i = 0; i < 9; i++){
+                    printf("%i ", choices[i]);
+                }
                 turns--;
             }
+            printf("\n");
         }
-        else if(position == 2)
+        else if(position != 2)
         {
             if (turns % 2 == 0)
             {
@@ -106,11 +120,13 @@ int main(void)
 
 void print_grid(void)
 {
+    printDivider();
     printf(" %c | %c | %c\n", a, b, c);
     printDivider();
     printf(" %c | %c | %c\n", d, e, f);
     printDivider();
     printf(" %c | %c | %c\n", g, h, k);
+    printDivider();
 }
 
 void printDivider(void)
@@ -120,27 +136,26 @@ void printDivider(void)
 
 int checkChoice(int a)
 {
-    for(int i = 0; i < 9; i++)
+    if (a < 1 || a > 9)
     {
-        if (a > 9 || a < 1)
+        printf("less or greater\n");
+        return 1;
+    }
+    for(int i = 0; i < 9; i++)
+    {        
+        if (a == choices[i])
         {
+            printf("already chosen\n");
             return 1;
-        }
-        else if (a == choices[i])
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
         }
     }
-    return 1;
+    printf("good");
+    return 0;
 }
 
 int computerChoice(void)
 {
-    int lower = 0, upper = 8, count = 1;
+    int lower = 1, upper = 9, count = 1;
     int num;
     num = (rand() % (upper - lower + 1)) + lower;
     return num;
