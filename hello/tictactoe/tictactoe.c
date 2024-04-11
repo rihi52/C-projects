@@ -5,13 +5,14 @@
 
 // char *choices = "012345678";
 int playerChoice = 0, comChoice = 0;
-int position = 0, turns = 8;
-int choices[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+int position = 0, turns = 8, row = 0, col = 0;
+int choices[3][3]; //= {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 char a = '1', b = '2', c = '3', d = '4', e = '5', f = '6', g = '7', h = '8', k = '9', first = 'X', second = 'O';
 
 void print_grid(void);
 void printDivider(void);
 int checkChoice(int a);
+int checkPCChoice(int a);
 int computerChoice(void);
 void assignChoice(int choice, char symbol);
 
@@ -48,67 +49,55 @@ int main(void)
                 do{
                 printf("Enter your choice: ");
                 scanf("%i", &playerChoice);
-                printf("Your choice is: %i\n", playerChoice);
                 } while (checkChoice(playerChoice) == 1);
-                if (checkChoice(playerChoice) == 0)
-                {
-                    assignChoice(playerChoice, first);
-                    print_grid();
-                    choices[turns] = playerChoice;
-                    for(int i = 0; i < 9; i++){
-                        printf("%i ", choices[i]);
-                    }
-                    turns--;
-                }
-                else
-                {
-                    printf("Invalid Choice\n");
-                }
-                printf("\n");
+                assignChoice(playerChoice, first);
+                print_grid();
+                //choices[row][col] = playerChoice;
+                turns--;
+                row++;
+                col++;
             }
             else
             {
                 do
                 {
                     comChoice = computerChoice();
-                } while ( checkChoice(comChoice) == 1);
-                printf("PC choice is: %i\n", comChoice);
+                } while ( checkPCChoice(comChoice) == 1);
                 assignChoice(comChoice, second);
-                choices[turns] = comChoice;
+                //choices[row][col] = comChoice;
                 print_grid();
-                for(int i = 0; i < 9; i++){
-                    printf("%i ", choices[i]);
-                }
                 turns--;
+                row++;
+                col++;
             }
-            printf("\n");
         }
         else if(position != 2)
         {
             if (turns % 2 == 0)
-            {
+             {
+                do{
                 printf("Enter your choice: ");
                 scanf("%i", &playerChoice);
-                if (checkChoice(playerChoice) == 0)
-                {
-                    assignChoice(playerChoice, first);
-                    print_grid();
-                    turns--;
-                }
-                else
-                {
-                    printf("Invalid Choice\n");
-                }
+                } while (checkChoice(playerChoice) == 1);
+                assignChoice(playerChoice, first);
+                print_grid();
+                //choices[row][col] = playerChoice;
+                turns--;
+                row++;
+                col++;
             }
             else
             {
                 do
                 {
                     comChoice = computerChoice();
-                } while ( checkChoice(comChoice) == 1);
+                } while ( checkPCChoice(comChoice) == 1);
                 assignChoice(comChoice, second);
+                //choices[row][col] = comChoice;
                 print_grid();
                 turns--;
+                row++;
+                col++;
             }
         }
         else
@@ -136,20 +125,40 @@ void printDivider(void)
 
 int checkChoice(int a)
 {
+    int i, j;
     if (a < 1 || a > 9)
     {
         printf("less or greater\n");
         return 1;
     }
-    for(int i = 0; i < 9; i++)
-    {        
-        if (a == choices[i])
-        {
-            printf("already chosen\n");
-            return 1;
-        }
+    for(i = 0; i < 3; i++){
+        for (j = 0; j < 3; j++){
+            if (a == choices[i][j])
+            {
+                printf("Already Chosen\n");
+                return 1;
+            }
+        }        
     }
-    printf("good");
+    choices[i][j] = a;
+    return 0;
+}
+
+int checkPCChoice(int a)
+{
+    int i, j;
+    if (a < 1 || a > 9)
+    {
+        return 1;
+    }
+    for(i = 0; i < 3; i++){
+        for (j = 0; j < 3; j++){
+            if (a == choices[i][j])
+            {
+                return 1;
+            }
+        }        
+    }
     return 0;
 }
 
