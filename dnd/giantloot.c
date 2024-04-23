@@ -9,6 +9,8 @@ Program should take following arguments:
 Program will then prompt how many times to roll
 Return items
 */
+/****** Fire Giant's Bag ******/
+const char *fireBag[] = {"Ball", "Rock", "Gold"};
 
 int main(int argc, char *argv[])
 {
