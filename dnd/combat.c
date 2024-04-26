@@ -98,6 +98,10 @@ int main(void)
             {
                 initCountcombat(magmins, numMagmin, i);
             }
+            if (axes[0].init == i)
+            {
+                initCountcombat(axes, numAxe, i);
+            }
         }
     } while (checkHp(orcs, numOrc, axes, numAxe, orogs, numOrog, magmins, numMagmin));
     
