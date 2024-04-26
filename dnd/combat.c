@@ -90,19 +90,15 @@ int main(void)
             {
                 initCountcombat(orcs, numOrc, i);
             }
-            if (orogs[1].init == i)
+            if (orogs[0].init == i)
             {
-
+                initCountcombat(orogs, numOrog, i);
             }
-            if (magmins[1].init == i)
+            if (magmins[0].init == i)
             {
-
+                initCountcombat(magmins, numMagmin, i);
             }
         }
-        
-        
-
-
     } while (checkHp(orcs, numOrc, axes, numAxe, orogs, numOrog, magmins, numMagmin));
     
 
@@ -195,6 +191,7 @@ void initCountcombat(struct enemy *array, int size, int init)
 {
     char initState = '\0';
     int dmgEnemy = 0, dmgAmount = 0;
+
     do
     {
         printf("*** Enemies at Initiative %i ***\n\n", init);
@@ -202,6 +199,7 @@ void initCountcombat(struct enemy *array, int size, int init)
         printf("\n********************************\n");
         printf("What next: ");
         scanf(" %c", &initState);
+        printf("%c\n", initState);
         if (initState == 'd')
         {
             printf("Damage to: ");
@@ -219,8 +217,12 @@ void initCountcombat(struct enemy *array, int size, int init)
             array[dmgEnemy].hp -= dmgAmount;
             }
             // Checking printf("%i\n", orcs[dmgEnemy].hp);
-
+            printf("%c\n", initState);
             initState = 'w';
+            printf("%c\n", initState);
         }
+        printf("%c\n", initState);
     } while (initState == 'w');
+    printf("%c final\n", initState);
+    return;
 }
