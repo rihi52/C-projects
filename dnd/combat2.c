@@ -33,10 +33,6 @@ char *magminNames[] = {"magmin1", "magmin2","magmin3", "magmin4","magmin5", "mag
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
-void addStats(struct part* array, int size, char type, int init);
-bool checkHp(struct part* orcArray, int orcSize, struct part* axeArray, int axeSize, struct part* orogArray, int orogSize, struct part* magminArray, int magminSize);
-void printInitbracket(struct part *array, int size);
-void initPartcombat(struct part *array, int size, int init);
 void addEnemy (struct part *enemy, int size);
 // void initPlayercombat(struct player *array, int size, int init);
 
@@ -45,6 +41,12 @@ int main(void)
     int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;    
     int initOrc = 0, initOrog = 0, initMagmin = 0;
     char type;
+
+    /* Initialize initiative brackets with NULL */
+    for (int i = 0; i < 30; i++)
+    {
+        initOrder[i] = NULL;
+    }
 
     /* Linked list of unique part stats */
     part ildmane = {"ildmane", 0, 18, 162, NULL};
@@ -96,7 +98,23 @@ int main(void)
 
     addEnemy(&orc, numOrc);
     addEnemy(&orog, numOrog);
-    addEnemy(&magmin, numMagmin);    
+    addEnemy(&magmin, numMagmin);
+
+    part *temp = &ravi;
+    while(temp != NULL){
+        initOrder[temp->init] = temp;
+        temp = temp->next;
+    }
+
+    temp = &okssort;
+    while(temp != NULL){
+        initOrder[temp->init] = temp;
+        temp = temp->next;
+    }
+
+    initOrder[orc.init] = &orc;
+    initOrder[orog.init] = &orog;
+    initOrder[magmin.init] = &magmin;
 
     return 0;
 }
@@ -121,13 +139,15 @@ void addEnemy (struct part *enemy, int size)
         return;
     }
 
+    part orc = {"orc", 0, 13, 15, NULL};
+
     part *temp = malloc(sizeof(part));
     temp = enemy;
     for (int i = 0; i < size; i++)
     {
         temp->next = enemy;
-        temp = temp->next->next;
-        printf("added orc\n");
+        printf("added %s\n", temp->name);
+        temp = temp->next->next;        
     }
 
     temp = enemy->next;
@@ -136,81 +156,5 @@ void addEnemy (struct part *enemy, int size)
     free(temp);
     temp = temp->next;
     }
-    return;
-}
-
-bool checkHp(struct part* orcArray, int orcSize, struct part* axeArray, int axeSize, struct part* orogArray, int orogSize, struct part* magminArray, int magminSize)
-{
-    bool orc = false, axe = false, orog = false, magmin = false;
-    for(int i = 0; i < orcSize; i++)
-    {
-        if (orcArray[i].hp > 0) orc = true;
-    }
-
-    for(int i = 0; i < axeSize; i++)
-    {
-        if (axeArray[i].hp > 0) axe = true;
-    }
-
-    for(int i = 0; i < orogSize; i++)
-    {
-        if (orogArray[i].hp > 0) orog = true;
-    }
-
-    for(int i = 0; i < magminSize; i++)
-    {
-        if (magminArray[i].hp > 0) magmin = true;
-    }
-
-    if (orc == true || axe == true || orog == true || magmin == true) return true;
-
-    return false;
-}
-
-void printInitbracket(struct part *array, int size)
-{
-    for(int i = 0; i < size; i++)
-    {
-        printf("%s AC:%i HP:%i\n", array[i].name, array[i].ac, array[i].hp);
-    }
-}
-
-void initPartcombat(struct part *array, int size, int init)
-{
-    char initState = '\0';
-    int dmgpart = 0, dmgAmount = 0;
-
-    do
-    {
-        printf("*** Combatants at Initiative %i ***\n\n", init);
-        printInitbracket(array, size);
-        printf("\n********************************\n");
-        printf("What next: ");
-        scanf(" %c", &initState);
-        printf("%c\n", initState);
-        if (initState == 'd')
-        {
-            printf("Damage to: ");
-            scanf("%i", &dmgpart);
-            // Checking printf("%i\n", orcs[dmgpart].hp);
-            if (array[dmgpart].hp <= 0)
-            {
-                printf("*** Already dead ***\n");
-            }
-            else
-            {
-            printf("Damage amount: ");
-            scanf("%i", &dmgAmount);
-
-            array[dmgpart].hp -= dmgAmount;
-            }
-            // Checking printf("%i\n", orcs[dmgpart].hp);
-            printf("%c\n", initState);
-            initState = 'w';
-            printf("%c\n", initState);
-        }
-        printf("%c\n", initState);
-    } while (initState == 'w');
-    printf("%c final\n", initState);
     return;
 }
