@@ -95,51 +95,47 @@ int main(void)
     scanf("%i", &initMagmin);
 
     addEnemy(&orc, numOrc);
-
-    part *temp = malloc(sizeof(part));
-    temp = &orc;
-
-    for (int i = 0; i < numOrc; i++)
-    {
-        printf("%s %i\n", temp->name, i);
-        temp = temp->next;
-    }
-
-    free(temp);
-
     addEnemy(&orog, numOrog);
-    addEnemy(&magmin, numMagmin);
-
-
-    
+    addEnemy(&magmin, numMagmin);    
 
     return 0;
 }
 
 void setInitiative(struct part *person, int size)
 {
-    part *temp = malloc(sizeof(part));
-    temp = person;
-    for (int i = 0; i < size; i++)
-    {
-        temp->next = temp;
-        temp = temp->next;
-    }
-    free(temp);
-    return;
-}
+    part *temp = person;
 
-void addEnemy (struct part *enemy, int size)
-{
-    part *temp = malloc(sizeof(part));
-    temp = enemy;
     for (int i = 0; i < size; i++)
     {
         printf("%s's initiative: ", temp->name);
         scanf("%i", &temp->init);
         temp = temp->next;
     }
+    return;
+}
+
+void addEnemy (struct part *enemy, int size)
+{
+    if (size <= 1)
+    {
+        return;
+    }
+
+    part *temp = malloc(sizeof(part));
+    temp = enemy;
+    for (int i = 0; i < size; i++)
+    {
+        temp->next = enemy;
+        temp = temp->next->next;
+        printf("added orc\n");
+    }
+
+    temp = enemy->next;
+
+    while (temp != NULL){
     free(temp);
+    temp = temp->next;
+    }
     return;
 }
 
