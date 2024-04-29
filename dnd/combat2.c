@@ -37,6 +37,7 @@ void addStats(struct part* array, int size, char type, int init);
 bool checkHp(struct part* orcArray, int orcSize, struct part* axeArray, int axeSize, struct part* orogArray, int orogSize, struct part* magminArray, int magminSize);
 void printInitbracket(struct part *array, int size);
 void initPartcombat(struct part *array, int size, int init);
+void addEnemy (struct part *enemy, int size);
 // void initPlayercombat(struct player *array, int size, int init);
 
 int main(void)
@@ -57,13 +58,16 @@ int main(void)
     part pax = {"pax", 0, 16, 57, &theon};
     part finn = {"finn", 0, 15, 36, &pax};
     part ravi = {"ravi", 0, 16, 34, &finn};    
-    
-    part players[4] = {
-                        {"ravi", 0, 16, 34},
-                        {"pax", 0, 16, 57},
-                        {"finn", 0, 15, 36},
-                        {"theon", 0, 16, 55}};
 
+    /* Orc Enemies */
+    part orc = {"orc", 0, 13, 15, NULL};
+
+    /* Orog Enemies */
+    part orog = {"orog", 0, 18, 53, NULL};
+
+    /* Magmin Enemies */
+    part magmin = {"magmin", 0, 15, 9, NULL};
+    
     setInitiative(&ravi, numPlayer);
 
     setInitiative(&okssort, numGiant);
@@ -90,83 +94,23 @@ int main(void)
     printf("Magmin initiative: ");
     scanf("%i", &initMagmin);
 
-    int totalCombatants = numPlayer + numOrc + numOrog + numMagmin + numGiant;
-    int totalInits = numPlayer + 4;
-    int initiatives[totalInits];
-    initiatives[0] = players[0].init;
-    initiatives[1] = players[1].init;
-    initiatives[2] = players[2].init;
-    initiatives[3] = players[3].init;
+    addEnemy(&orc, numOrc);
 
-    initiatives[4] = initOrc;
-    initiatives[5] = initOrog;
-    initiatives[6] = initMagmin;
-    initiatives[7] = giants[0].init;
+    part *temp = malloc(sizeof(part));
+    temp = &orc;
 
-    /* Initialize part arrays*/
-    part orcs[numOrc];
-    part orogs[numOrog];
-    part magmins[numMagmin];
-    part axes[numAxe];
-
-    /* Add stats to part arrays*/
-    type = 'a';
-    addStats(orcs, numOrc, type, initOrc);
-    type = 'b';
-    addStats(orogs, numOrog, type, initOrog);
-    type = 'c';
-    addStats(magmins, numMagmin, type, initMagmin);
-    type = 'd';
-    addStats(axes, numAxe, type, initAxe);
-    
-    do
+    for (int i = 0; i < numOrc; i++)
     {
-        for(int i = 30; i > 0; i--)
-        {
-            for(int j = 0; j < totalInits; j++)
-            {
-                if (i == initiatives[j])
-                {
-                    printf("\n**********************\n");
-                    printf("*** Total Combatants ***\n");
-                    printInitbracket(players, numPlayer);
-                    printInitbracket(giants, numGiant);
-                    printInitbracket(orcs, numOrc);
-                    printInitbracket(orogs, numOrog);
-                    printInitbracket(magmins, numMagmin);
-                    printf("\n**********************\n");
-                    break;
-                }                
-            }
-            for(int j = 0; j < numPlayer; j++)
-            {
-                if (players[j].init == i)
-                {
-                    initPartcombat(players, numPlayer, i);
-                }
-            }
-            if (giants[0].init == i)
-            {
-                initPartcombat(giants, numGiant, i);
-            }
-            if (orcs[0].init == i)
-            {
-                initPartcombat(orcs, numOrc, i);
-            }
-            if (orogs[0].init == i)
-            {
-                initPartcombat(orogs, numOrog, i);
-            }
-            if (magmins[0].init == i)
-            {
-                initPartcombat(magmins, numMagmin, i);
-            }
-            if (axes[0].init == i)
-            {
-                initPartcombat(axes, numAxe, i);
-            }
-        }
-    } while (checkHp(orcs, numOrc, axes, numAxe, orogs, numOrog, magmins, numMagmin));
+        printf("%s %i\n", temp->name, i);
+        temp = temp->next;
+    }
+
+    free(temp);
+
+    addEnemy(&orog, numOrog);
+    addEnemy(&magmin, numMagmin);
+
+
     
 
     return 0;
@@ -178,57 +122,24 @@ void setInitiative(struct part *person, int size)
     temp = person;
     for (int i = 0; i < size; i++)
     {
-        printf("%s's initiative: ", temp->name);
-        scanf("%i", &temp->init);
+        temp->next = temp;
         temp = temp->next;
     }
     free(temp);
     return;
 }
 
-void addStats(struct part* array, int size, char type, int init)
+void addEnemy (struct part *enemy, int size)
 {
-    switch (type) {
-    case 'a':
-        for(int i = 0; i < size; i++)
-        {
-            array[i].name = orcNames[i];
-            array[i].init = init;
-            array[i].ac = 13;
-            array[i].hp = 15;
-        }
-        break;
-    case 'b':
-    for(int i = 0; i < size; i++)
-        {
-            array[i].name = orogNames[i];
-            array[i].init = init;
-            array[i].ac = 18;
-            array[i].hp = 42;
-        }
-        break;
-    case 'c':
-    for(int i = 0; i < size; i++)
-        {
-            array[i].name = magminNames[i];
-            array[i].init = init;
-            array[i].ac = 14;
-            array[i].hp = 9;
-        }
-        break;
-    case 'd':
-    for(int i = 0; i < size; i++)
-        {
-            array[i].name = axeNames[i];
-            array[i].init = init;
-            array[i].ac = 11;
-            array[i].hp = 19;
-        }
-        break;
-    default:
-        printf("error: type does not exist\n");
-        break;
+    part *temp = malloc(sizeof(part));
+    temp = enemy;
+    for (int i = 0; i < size; i++)
+    {
+        printf("%s's initiative: ", temp->name);
+        scanf("%i", &temp->init);
+        temp = temp->next;
     }
+    free(temp);
     return;
 }
 
