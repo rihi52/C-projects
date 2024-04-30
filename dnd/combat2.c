@@ -14,8 +14,6 @@ typedef struct part{
     struct part *next;
 }part;
 
-part *initOrder[30];
-
 /* Global players and enemies */
 part ravi;
 part finn;
@@ -25,6 +23,9 @@ part okssort;
 part ildmane;
 
 /* Global Variables*/
+int initSpread = 30;
+part *initOrder[30];
+
 /* part Names */
 char *orcNames[] = {"orc1", "orc2","orc3", "orc4","orc5", "orc6","orc7", "orc8","orc9", "orc10"};
 char *axeNames[] = {"axe1", "axe2","axe3", "axe4","axe5", "axe6","axe7", "axe8","axe9", "axe10"};
@@ -33,7 +34,8 @@ char *magminNames[] = {"magmin1", "magmin2","magmin3", "magmin4","magmin5", "mag
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
-void addEnemy (struct part *enemy, int size);
+void addEnemy (struct part *enemy, int size, int initiative);
+void printInitOrder(struct part *array[]);
 // void initPlayercombat(struct player *array, int size, int init);
 
 int main(void)
@@ -88,7 +90,6 @@ int main(void)
     /* Assign Initiative */
     printf("Orc initiative: ");
     scanf("%i", &initOrc);
-    int initAxe = initOrc;
 
     printf("Orog initiative: ");
     scanf("%i", &initOrog);
@@ -96,25 +97,30 @@ int main(void)
     printf("Magmin initiative: ");
     scanf("%i", &initMagmin);
 
-    addEnemy(&orc, numOrc);
-    addEnemy(&orog, numOrog);
-    addEnemy(&magmin, numMagmin);
+    addEnemy(&orc, numOrc, initOrc);
+    addEnemy(&orog, numOrog, initOrog);
+    addEnemy(&magmin, numMagmin, initMagmin);
 
-    part *temp = &ravi;
-    while(temp != NULL){
-        initOrder[temp->init] = temp;
+    
+    initOrder[ravi.init] = &ravi;
+    initOrder[finn.init] = &finn;
+    initOrder[pax.init] = &pax;
+    initOrder[theon.init] = &theon;
+    /*while(temp != NULL){        
         temp = temp->next;
-    }
+    }*/
 
-    temp = &okssort;
-    while(temp != NULL){
-        initOrder[temp->init] = temp;
+    initOrder[okssort.init] = &okssort;
+    initOrder[ildmane.init] = &ildmane;
+    /*while(temp != NULL){
         temp = temp->next;
-    }
+    }*/
 
     initOrder[orc.init] = &orc;
     initOrder[orog.init] = &orog;
     initOrder[magmin.init] = &magmin;
+
+    printInitOrder(initOrder);
 
     return 0;
 }
@@ -132,29 +138,47 @@ void setInitiative(struct part *person, int size)
     return;
 }
 
-void addEnemy (struct part *enemy, int size)
+void addEnemy (struct part *enemy, int size, int initiative)
 {
     if (size <= 1)
     {
         return;
     }
 
-    part orc = {"orc", 0, 13, 15, NULL};
-
-    part *temp = malloc(sizeof(part));
-    temp = enemy;
+    //part *temp = malloc(sizeof(part));
+    enemy->init = initiative;
+    part *temp = enemy;
     for (int i = 0; i < size; i++)
     {
         temp->next = enemy;
         printf("added %s\n", temp->name);
-        temp = temp->next->next;        
+        if (i == size - 1){
+            temp->next = NULL;
+        }else{
+        temp = temp->next->next;    
+        }
     }
 
     temp = enemy->next;
 
-    while (temp != NULL){
+    /*while (temp != NULL){
     free(temp);
     temp = temp->next;
-    }
+    }*/
     return;
+}
+
+void printInitOrder(struct part *array[])
+{
+    part *temp;
+    printf("\n****** Intiative Order Start******\n\n");
+
+    for(int i = initSpread - 1; i >= 0; i--){
+        if (initOrder[i] == NULL){
+            continue;
+        }
+        temp = initOrder[i];
+        printf("%s: %i\n", temp->name, temp->init);
+    }
+    printf("\n****** Intiative Order End ******\n");
 }
