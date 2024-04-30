@@ -8,6 +8,7 @@
 /* Stucts */
 typedef struct part{
     char *name;
+    bool playerChar;
     int init;
     int ac;
     int hp;
@@ -23,6 +24,16 @@ part okssort;
 part ildmane;
 
 part *temp;
+part *temp2;
+
+/* Orc Enemies */
+//part orc = {"orc", false, 0, 13, 15, NULL};
+
+/* Orog Enemies */
+//part orog = {"orog", false, 0, 18, 53, NULL};
+
+/* Magmin Enemies */
+////part magmin = {"magmin", false, 0, 15, 9, NULL};
 
 /* Global Variables*/
 int initSpread = 30;
@@ -53,26 +64,26 @@ int main(void)
     }
 
     /* Linked list of unique part stats */
-    part ildmane = {"ildmane", 0, 18, 162, NULL};
-    part okssort = {"okssort", 0, 17, 162, &ildmane};    
+    part ildmane = {"ildmane", true, 0, 18, 162, NULL};
+    part okssort = {"okssort", true, 0, 17, 162, &ildmane};    
 
     part giants[2] = {{"okssort", 0, 17, 162},
                       {"ildmane", 0, 18, 162}};
 
     /* Linked list of player stats */
-    part theon = {"theon", 0, 16, 55, NULL};
-    part pax = {"pax", 0, 16, 57, &theon};
-    part finn = {"finn", 0, 15, 36, &pax};
-    part ravi = {"ravi", 0, 16, 34, &finn};    
+    part theon = {"theon", true, 0, 16, 55, NULL};
+    part pax = {"pax", true, 0, 16, 57, &theon};
+    part finn = {"finn", true, 0, 15, 36, &pax};
+    part ravi = {"ravi", true, 0, 16, 34, &finn};    
 
     /* Orc Enemies */
-    part orc = {"orc", 0, 13, 15, NULL};
+    part orc = {"orc", false, 0, 13, 15, NULL};
 
     /* Orog Enemies */
-    part orog = {"orog", 0, 18, 53, NULL};
+    part orog = {"orog", false, 0, 18, 53, NULL};
 
     /* Magmin Enemies */
-    part magmin = {"magmin", 0, 15, 9, NULL};
+    part magmin = {"magmin", false, 0, 15, 9, NULL};
     
     setInitiative(&ravi, numPlayer);
 
@@ -145,6 +156,11 @@ void addEnemy (struct part *enemy, int size, int initiative)
 
     enemy->init = initiative;
     temp = enemy;
+    temp2->name = temp->name;
+    temp2->playerChar = temp->playerChar;
+    temp2->ac = temp->ac;
+    temp2->hp = temp->hp;
+    temp2->next = NULL;
     for (int i = 0; i < size; i++)
     {
         temp->next = enemy;
@@ -171,8 +187,16 @@ void printInitOrder(struct part *array[])
             continue;
         }
         temp = initOrder[i];
+
+        if (temp->playerChar == false){
+            while (temp != NULL){
+                printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
+                temp = temp->next;
+            }
+        }
         printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
     }
+
     temp = NULL;
     printf("\n****** Intiative Order End ******\n");
     return;
