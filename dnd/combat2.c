@@ -22,6 +22,8 @@ part theon;
 part okssort;
 part ildmane;
 
+part *temp;
+
 /* Global Variables*/
 int initSpread = 30;
 part *initOrder[30];
@@ -106,15 +108,9 @@ int main(void)
     initOrder[finn.init] = &finn;
     initOrder[pax.init] = &pax;
     initOrder[theon.init] = &theon;
-    /*while(temp != NULL){        
-        temp = temp->next;
-    }*/
 
     initOrder[okssort.init] = &okssort;
     initOrder[ildmane.init] = &ildmane;
-    /*while(temp != NULL){
-        temp = temp->next;
-    }*/
 
     initOrder[orc.init] = &orc;
     initOrder[orog.init] = &orog;
@@ -127,7 +123,8 @@ int main(void)
 
 void setInitiative(struct part *person, int size)
 {
-    part *temp = person;
+    //part *temp = person;
+    temp = person;
 
     for (int i = 0; i < size; i++)
     {
@@ -135,6 +132,7 @@ void setInitiative(struct part *person, int size)
         scanf("%i", &temp->init);
         temp = temp->next;
     }
+    temp = NULL;
     return;
 }
 
@@ -145,9 +143,8 @@ void addEnemy (struct part *enemy, int size, int initiative)
         return;
     }
 
-    //part *temp = malloc(sizeof(part));
     enemy->init = initiative;
-    part *temp = enemy;
+    temp = enemy;
     for (int i = 0; i < size; i++)
     {
         temp->next = enemy;
@@ -160,17 +157,13 @@ void addEnemy (struct part *enemy, int size, int initiative)
     }
 
     temp = enemy->next;
-
-    /*while (temp != NULL){
-    free(temp);
-    temp = temp->next;
-    }*/
+    temp = NULL;
     return;
 }
 
 void printInitOrder(struct part *array[])
 {
-    part *temp;
+    //part *temp;
     printf("\n****** Intiative Order Start******\n\n");
 
     for(int i = initSpread - 1; i >= 0; i--){
@@ -178,7 +171,9 @@ void printInitOrder(struct part *array[])
             continue;
         }
         temp = initOrder[i];
-        printf("%s: %i\n", temp->name, temp->init);
+        printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
     }
+    temp = NULL;
     printf("\n****** Intiative Order End ******\n");
+    return;
 }
