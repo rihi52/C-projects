@@ -8,7 +8,7 @@
 /* Stucts */
 typedef struct part{
     char *name;
-    bool playerChar;
+    bool playerChar; // True for player character
     int init;
     int ac;
     int hp;
@@ -23,17 +23,26 @@ part theon;
 part okssort;
 part ildmane;
 
-part *temp;
-part *temp2;
+//part *temp2;
 
 /* Orc Enemies */
-//part orc = {"orc", false, 0, 13, 15, NULL};
+part orc = {"orc", false, 0, 13, 15, NULL};
 
 /* Orog Enemies */
-//part orog = {"orog", false, 0, 18, 53, NULL};
+part orog = {"orog", false, 0, 18, 53, &orc};
 
 /* Magmin Enemies */
-////part magmin = {"magmin", false, 0, 15, 9, NULL};
+part magmin = {"magmin", false, 0, 15, 9, &orog};
+
+/* Linked list of unique part stats */
+part ildmane = {"ildmane", true, 0, 18, 162, &magmin};
+part okssort = {"okssort", true, 0, 17, 162, &ildmane};
+
+/* Linked list of player stats */
+part theon = {"theon", true, 0, 16, 55, &okssort};
+part pax = {"pax", true, 0, 16, 57, &theon};
+part finn = {"finn", true, 0, 15, 36, &pax};
+part ravi = {"ravi", true, 0, 16, 34, &finn};
 
 /* Global Variables*/
 int initSpread = 30;
@@ -47,12 +56,14 @@ char *magminNames[] = {"magmin1", "magmin2","magmin3", "magmin4","magmin5", "mag
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
-void addEnemy (struct part *enemy, int size, int initiative);
-void printInitOrder(struct part *array[]);
+void addEnemy (struct part *tail, struct part *enemy, int size, int initiative);
+void printInitOrder(struct part *head);
 // void initPlayercombat(struct player *array, int size, int init);
 
 int main(void)
 {
+    part *head;
+    part *tail;
     int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;    
     int initOrc = 0, initOrog = 0, initMagmin = 0;
     char type;
@@ -63,27 +74,27 @@ int main(void)
         initOrder[i] = NULL;
     }
 
-    /* Linked list of unique part stats */
-    part ildmane = {"ildmane", true, 0, 18, 162, NULL};
-    part okssort = {"okssort", true, 0, 17, 162, &ildmane};    
-
-    part giants[2] = {{"okssort", 0, 17, 162},
-                      {"ildmane", 0, 18, 162}};
-
-    /* Linked list of player stats */
-    part theon = {"theon", true, 0, 16, 55, NULL};
-    part pax = {"pax", true, 0, 16, 57, &theon};
-    part finn = {"finn", true, 0, 15, 36, &pax};
-    part ravi = {"ravi", true, 0, 16, 34, &finn};    
-
     /* Orc Enemies */
-    part orc = {"orc", false, 0, 13, 15, NULL};
+   // part orc = {"orc", false, 0, 13, 15, NULL};
 
     /* Orog Enemies */
-    part orog = {"orog", false, 0, 18, 53, NULL};
+    //part orog = {"orog", false, 0, 18, 53, orc};
 
     /* Magmin Enemies */
-    part magmin = {"magmin", false, 0, 15, 9, NULL};
+    //part magmin = {"magmin", false, 0, 15, 9, orog};
+
+    /* Linked list of unique part stats */
+    //part ildmane = {"ildmane", true, 0, 18, 162, magmin};
+    //part okssort = {"okssort", true, 0, 17, 162, &ildmane};    
+
+    /* Linked list of player stats */
+    /*part theon = {"theon", true, 0, 16, 55, okssort};
+    part pax = {"pax", true, 0, 16, 57, &theon};
+    part finn = {"finn", true, 0, 15, 36, &pax};
+    part ravi = {"ravi", true, 0, 16, 34, &finn};*/
+
+    head = &ravi;
+    tail = &orc;
     
     setInitiative(&ravi, numPlayer);
 
@@ -110,9 +121,9 @@ int main(void)
     printf("Magmin initiative: ");
     scanf("%i", &initMagmin);
 
-    addEnemy(&orc, numOrc, initOrc);
-    addEnemy(&orog, numOrog, initOrog);
-    addEnemy(&magmin, numMagmin, initMagmin);
+    addEnemy(tail, &orc, numOrc, initOrc);
+    addEnemy(tail, &orog, numOrog, initOrog);
+    addEnemy(tail, &magmin, numMagmin, initMagmin);
 
     
     initOrder[ravi.init] = &ravi;
@@ -127,77 +138,92 @@ int main(void)
     initOrder[orog.init] = &orog;
     initOrder[magmin.init] = &magmin;
 
-    printInitOrder(initOrder);
+    printInitOrder(head);
 
     return 0;
 }
 
 void setInitiative(struct part *person, int size)
 {
-    //part *temp = person;
-    temp = person;
+    part *current = person;
+    //temp = person;
 
     for (int i = 0; i < size; i++)
     {
-        printf("%s's initiative: ", temp->name);
-        scanf("%i", &temp->init);
-        temp = temp->next;
+        printf("%s's initiative: ", current->name);
+        scanf("%i", &current->init);
+        current = current->next;
     }
-    temp = NULL;
+    current = NULL;
     return;
 }
 
-void addEnemy (struct part *enemy, int size, int initiative)
+void addEnemy (struct part *tail, struct part *enemy, int size, int initiative)
 {
     if (size <= 1)
     {
         return;
     }
+    //part *current = tail;
 
-    enemy->init = initiative;
-    temp = enemy;
-    temp2->name = temp->name;
-    temp2->playerChar = temp->playerChar;
-    temp2->ac = temp->ac;
-    temp2->hp = temp->hp;
-    temp2->next = NULL;
-    for (int i = 0; i < size; i++)
+    for (int i = 1; i < size; i++)
     {
-        temp->next = enemy;
-        printf("added %s\n", temp->name);
-        if (i == size - 1){
-            temp->next = NULL;
-        }else{
-        temp = temp->next->next;    
+        part *new = malloc(sizeof(part));
+
+        if (enemy == &orc)
+        {
+            new->name = orc.name;
+            new->playerChar = orc.playerChar;
+            new->ac = orc.ac;
+            new->hp = orc.hp;
+            new->init = orc.init;        
+            new->next = NULL;
+            tail->next = new;
+            tail = new;
+        }
+        else if(enemy == &orog)
+        {
+            new->name = orog.name;
+            new->playerChar = orog.playerChar;
+            new->ac = orog.ac;
+            new->hp = orog.hp;
+            new->init = orog.init;        
+            new->next = NULL;
+            tail->next = new;
+            tail = new;
+        }
+        else if(enemy == &magmin)
+        {
+            new->name = magmin.name;
+            new->playerChar = magmin.playerChar;
+            new->ac = magmin.ac;
+            new->hp = magmin.hp;
+            new->init = magmin.init;        
+            new->next = NULL;
+            tail->next = new;
+            tail = new;
         }
     }
-
-    temp = enemy->next;
-    temp = NULL;
     return;
 }
 
-void printInitOrder(struct part *array[])
+void printInitOrder(struct part *head)
 {
-    //part *temp;
+    part *temp = head;
     printf("\n****** Intiative Order Start******\n\n");
 
-    for(int i = initSpread - 1; i >= 0; i--){
-        if (initOrder[i] == NULL){
-            continue;
-        }
-        temp = initOrder[i];
-
-        if (temp->playerChar == false){
-            while (temp != NULL){
-                printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
-                temp = temp->next;
+    for(int i = initSpread; i > 0; i--)
+    {
+        while (temp->next != NULL)
+        {
+            if (temp->init == i)
+            {
+            printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
             }
+            temp = temp->next;
         }
-        printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
+        temp = head;
     }
-
-    temp = NULL;
     printf("\n****** Intiative Order End ******\n");
     return;
 }
