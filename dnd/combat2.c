@@ -16,12 +16,12 @@ typedef struct part{
 }part;
 
 /* Global players and enemies */
-part ravi;
+/*part ravi;
 part finn;
 part pax;
 part theon;
 part okssort;
-part ildmane;
+part ildmane;*/
 
 //part *temp2;
 
@@ -56,7 +56,6 @@ char *magminNames[] = {"magmin1", "magmin2","magmin3", "magmin4","magmin5", "mag
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
-void addEnemy (struct part *tail, struct part *enemy);
 void printInitOrder(struct part *head);
 part *createNode(struct part *enemy);
 // void initPlayercombat(struct player *array, int size, int init);
@@ -66,7 +65,7 @@ int main(void)
     //part *head;
     //part *tail;
     int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;    
-    int initOrc = 0, initOrog = 0, initMagmin = 0;
+    //int initOrc = 0, initOrog = 0, initMagmin = 0;
     char type;
 
     /* Initialize initiative brackets with NULL */
@@ -97,9 +96,10 @@ int main(void)
     part *head = &ravi;
     part *tail = &orc;
     
+    /* Assign player and unique initiative */
     setInitiative(&ravi, numPlayer);
 
-    // setInitiative(&okssort, numGiant);
+    part *newEnemy;
     
     /* part count */
     printf("How many orcs: ");
@@ -111,63 +111,64 @@ int main(void)
     printf("How many magmins: ");
     scanf("%i", &numMagmin);
 
-    /* Assign Initiative */
+    /* Assign Enemy Initiative */
     printf("Orc initiative: ");
     scanf("%i", &orc.init);
 
-    printf("Orog initiative: ");
-    scanf("%i", &initOrog);
-
-    printf("Magmin initiative: ");
-    scanf("%i", &initMagmin);
-
-    part *newEnemy;
-
-    for(int i = 0; i < numOrc; i++)
+    for(int i = 0; i < numOrc - 1; i++)
     {
         if(numOrc <= 1)
         {
             break;
         }
         newEnemy = createNode(&orc);
-        addEnemy(tail, newEnemy);
+        tail->next = newEnemy;
+        tail = newEnemy;
+        //addEnemy(tail, newEnemy);
     }
-    for(int i = 0; i < numOrog; i++)
+
+    printf("Orog initiative: ");
+    scanf("%i", &orog.init);
+
+    for(int i = 0; i < numOrog - 1; i++)
     {
         if(numOrog <= 1)
         {
             break;
         }
         newEnemy = createNode(&orog);
-        addEnemy(tail, newEnemy);
+        tail->next = newEnemy;
+        tail = newEnemy;
+        //addEnemy(tail, newEnemy);
     }
-    for(int i = 0; i < numMagmin; i++)
+
+    printf("Magmin initiative: ");
+    scanf("%i", &magmin.init);
+    
+    for(int i = 0; i < numMagmin - 1; i++)
     {
         if(numMagmin <= 1)
         {
             break;
         }
         newEnemy = createNode(&magmin);
-        addEnemy(tail, newEnemy);
+        tail->next = newEnemy;
+        tail = newEnemy;
+        //addEnemy(tail, newEnemy);
     }
     
     //addEnemy(tail, &orog, numOrog, initOrog);
     //addEnemy(tail, &magmin, numMagmin, initMagmin);
 
-    
-    initOrder[ravi.init] = &ravi;
-    initOrder[finn.init] = &finn;
-    initOrder[pax.init] = &pax;
-    initOrder[theon.init] = &theon;
-
-    initOrder[okssort.init] = &okssort;
-    initOrder[ildmane.init] = &ildmane;
-
-    initOrder[orc.init] = &orc;
-    initOrder[orog.init] = &orog;
-    initOrder[magmin.init] = &magmin;
-
     printInitOrder(head);
+
+    part *temp = NULL;
+    part *current = orc.next;
+    while(current != NULL){
+        temp = current;
+        current = current->next;
+        free(temp);
+    }
 
     return 0;
 }
@@ -188,19 +189,12 @@ void setInitiative(struct part *person, int size)
     return;
 }
 
-//void addEnemy (struct part *tail, struct part *enemy, int size, int initiative)
-void addEnemy (struct part *tail, struct part *enemy)
-{
-    tail->next = enemy;
-    printf("%p, %p\n", enemy, tail->next);
-    tail = tail->next;
-    printf("%p, %p\n", enemy, tail->next);
-    return;
-}
-
 part *createNode(struct part *enemy)
 {
     part *new = malloc(sizeof(part));
+    if (new == NULL){
+        return NULL;
+    }
 
     if (enemy == &orc)
     {
