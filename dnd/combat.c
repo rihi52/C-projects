@@ -36,13 +36,6 @@ part ravi = {"ravi", true, 0, 16, 34, &finn};
 
 /* Global Variables*/
 int initSpread = 30;
-part *initOrder[30];
-
-/* part Names */
-char *orcNames[] = {"orc1", "orc2","orc3", "orc4","orc5", "orc6","orc7", "orc8","orc9", "orc10"};
-char *axeNames[] = {"axe1", "axe2","axe3", "axe4","axe5", "axe6","axe7", "axe8","axe9", "axe10"};
-char *orogNames[] = {"orog1", "orog2","orog3", "orog4","orog5", "orog6","orog7", "orog8","orog9", "orog10"};
-char *magminNames[] = {"magmin1", "magmin2","magmin3", "magmin4","magmin5", "magmin6","magmin7", "magmin8","magmin9", "magmin10"};
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
@@ -51,14 +44,7 @@ part *createNode(struct part *enemy);
 
 int main(void)
 {
-    int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;    
-    char type;
-
-    /* Initialize initiative brackets with NULL */
-    for (int i = 0; i < 30; i++)
-    {
-        initOrder[i] = NULL;
-    }
+    int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;
 
     part *head = &ravi;
     part *tail = &orc;
