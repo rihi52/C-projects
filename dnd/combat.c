@@ -16,13 +16,13 @@ typedef struct part{
 }part;
 
 /* Orc Enemies */
-part orc = {"orc", false, 0, 13, 15, NULL};
+part orc = {"Frost Giant", false, 0, 13, 15, NULL};
 
 /* Orog Enemies */
-part orog = {"orog", false, 0, 18, 53, &orc};
+part orog = {"Mercenary", false, 0, 18, 53, &orc};
 
 /* Magmin Enemies */
-part magmin = {"magmin", false, 0, 15, 9, &orog};
+part magmin = {"Wolf", false, 0, 15, 9, &orog};
 
 /* Linked list of unique part stats */
 part ildmane = {"ildmane", true, 0, 18, 162, &magmin};
@@ -69,17 +69,17 @@ int main(void)
     part *newEnemy;
     
     /* part count */
-    printf("How many orcs: ");
+    printf("How many %s: ", orc.name);
     scanf("%i", &numOrc);
    
-    printf("How many orogs: ");
+    printf("How many %s: ", orog.name);
     scanf("%i", &numOrog);
 
-    printf("How many magmins: ");
+    printf("How many %s: ", magmin.name);
     scanf("%i", &numMagmin);
 
     /* Assign Enemy Initiative */
-    printf("Orc initiative: ");
+    printf("%s's initiative: ", orc.name);
     scanf("%i", &orc.init);
 
     for(int i = 0; i < numOrc - 1; i++)
@@ -93,7 +93,7 @@ int main(void)
         tail = newEnemy;
     }
 
-    printf("Orog initiative: ");
+    printf("%s's initiative: ", orog.name);
     scanf("%i", &orog.init);
 
     for(int i = 0; i < numOrog - 1; i++)
@@ -107,7 +107,7 @@ int main(void)
         tail = newEnemy;
     }
 
-    printf("Magmin initiative: ");
+    printf("%s's initiative: ", magmin.name);
     scanf("%i", &magmin.init);
     
     for(int i = 0; i < numMagmin - 1; i++)
