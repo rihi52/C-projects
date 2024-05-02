@@ -41,10 +41,17 @@ int initSpread = 30;
 void setInitiative(struct part *person, int size);
 void printInitOrder(struct part *head);
 part *createNode(struct part *enemy);
+void dealDamage(struct part *head, int init, int count, int amount);
 
 int main(void)
 {
-    int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;
+    int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2, damaged = 0, damAmount = 0, damInit = 0;
+    char event = ' ';
+    /*
+    d = damage
+    e = end
+    */
+    bool combat = true;
 
     part *head = &ravi;
     part *tail = &orc;
@@ -109,6 +116,32 @@ int main(void)
 
     printInitOrder(head);
 
+    while (combat == true){
+        printf("What happens: ");
+        scanf(" %c", &event);
+        switch (event){
+            case 'd':
+            printf("Which initiative count takes damage (enter initiative): ");
+            scanf("%i", &damInit);
+            printf("Which creature on %i initiative: ", damInit);
+            scanf("%i", &damaged);
+            printf("How much damage: ");
+            scanf("%i", &damAmount);
+            dealDamage(head, damInit, damaged, damAmount);
+            printInitOrder(head);
+            break;
+            case 'e':            
+            printf("\n********** Combat Over **********\n\n");
+            combat = false;
+            break;
+            default:
+            printf("Invalid Choice: d for damage or e for end combat\n");
+            break;
+        }
+        
+    }
+
+    /* Free mallocs */
     part *temp = NULL;
     part *current = orc.next;
     while(current != NULL){
@@ -176,20 +209,44 @@ part *createNode(struct part *enemy)
 void printInitOrder(struct part *head)
 {
     part *temp = head;
+    int count = 1;
     printf("\n****** Intiative Order Start******\n\n");
 
     for(int i = initSpread; i > 0; i--)
     {
+        count = 1;
         while (temp != NULL)
         {
-            if (temp->init == i)
+            if (temp->init == i && temp->hp > 0)
             {
-            printf("%s, AC: %i, HP: %i\n", temp->name, temp->ac, temp->hp);
+            printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
+            count++;
             }
             temp = temp->next;
         }
         temp = head;
     }
     printf("\n****** Intiative Order End ******\n");
+    return;
+}
+
+void dealDamage(struct part *head, int init, int count, int amount)
+{
+    part *temp = head;
+    int counter = 1;
+
+    while (temp != NULL)
+    {
+        if (temp->init == init && counter != count)
+        {
+            counter++;
+        }
+        else if (temp->init == init && counter == count)
+        {
+            temp->hp -= amount;
+            break;
+        }      
+        temp = temp->next;
+    }    
     return;
 }
