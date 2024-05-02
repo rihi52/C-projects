@@ -15,16 +15,6 @@ typedef struct part{
     struct part *next;
 }part;
 
-/* Global players and enemies */
-/*part ravi;
-part finn;
-part pax;
-part theon;
-part okssort;
-part ildmane;*/
-
-//part *temp2;
-
 /* Orc Enemies */
 part orc = {"orc", false, 0, 13, 15, NULL};
 
@@ -58,14 +48,10 @@ char *magminNames[] = {"magmin1", "magmin2","magmin3", "magmin4","magmin5", "mag
 void setInitiative(struct part *person, int size);
 void printInitOrder(struct part *head);
 part *createNode(struct part *enemy);
-// void initPlayercombat(struct player *array, int size, int init);
 
 int main(void)
 {
-    //part *head;
-    //part *tail;
     int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2;    
-    //int initOrc = 0, initOrog = 0, initMagmin = 0;
     char type;
 
     /* Initialize initiative brackets with NULL */
@@ -73,25 +59,6 @@ int main(void)
     {
         initOrder[i] = NULL;
     }
-
-    /* Orc Enemies */
-   // part orc = {"orc", false, 0, 13, 15, NULL};
-
-    /* Orog Enemies */
-    //part orog = {"orog", false, 0, 18, 53, orc};
-
-    /* Magmin Enemies */
-    //part magmin = {"magmin", false, 0, 15, 9, orog};
-
-    /* Linked list of unique part stats */
-    //part ildmane = {"ildmane", true, 0, 18, 162, magmin};
-    //part okssort = {"okssort", true, 0, 17, 162, &ildmane};    
-
-    /* Linked list of player stats */
-    /*part theon = {"theon", true, 0, 16, 55, okssort};
-    part pax = {"pax", true, 0, 16, 57, &theon};
-    part finn = {"finn", true, 0, 15, 36, &pax};
-    part ravi = {"ravi", true, 0, 16, 34, &finn};*/
 
     part *head = &ravi;
     part *tail = &orc;
@@ -124,7 +91,6 @@ int main(void)
         newEnemy = createNode(&orc);
         tail->next = newEnemy;
         tail = newEnemy;
-        //addEnemy(tail, newEnemy);
     }
 
     printf("Orog initiative: ");
@@ -139,7 +105,6 @@ int main(void)
         newEnemy = createNode(&orog);
         tail->next = newEnemy;
         tail = newEnemy;
-        //addEnemy(tail, newEnemy);
     }
 
     printf("Magmin initiative: ");
@@ -154,11 +119,7 @@ int main(void)
         newEnemy = createNode(&magmin);
         tail->next = newEnemy;
         tail = newEnemy;
-        //addEnemy(tail, newEnemy);
     }
-    
-    //addEnemy(tail, &orog, numOrog, initOrog);
-    //addEnemy(tail, &magmin, numMagmin, initMagmin);
 
     printInitOrder(head);
 
