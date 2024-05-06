@@ -16,7 +16,7 @@ typedef struct part{
 }part;
 
 /* Orc Enemies */
-part orc = {"Frost Giant", false, 0, 13, 15, NULL};
+part orc = {"Giant", false, 0, 13, 15, NULL};
 
 /* Orog Enemies */
 part orog = {"Mercenary", false, 0, 18, 53, &orc};
