@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct subClass;
-typedef struct classFeat;
+// typedef struct subClass;
+// typedef struct classFeat;
 
 typedef struct class{
     char *name;
-    subClass subClass1;
+    char *subClass;
+    char *classFeat;
+    /*subClass subClass1;
     subClass subClass2;
     classFeat classFeat1;
-    classFeat classFeat2;
+    classFeat classFeat2;*/
 }class;
 
 typedef struct subClass{
@@ -26,4 +28,4 @@ subClass subClass2 = {"Battle Master"};
 classFeat classFeat1 = {"Action Surge", 2};
 classFeat classFeat2 = {"Extra Attack", 5};
 
-class fighter = {"Fighter", subClass1, subClass2, classFeat1, classFeat2};
+class fighter = {"Fighter", "Champion", "Action Surge"};
