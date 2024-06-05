@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct subClass{
     char *name;
@@ -18,8 +19,63 @@ typedef struct subFeat{
     char *description;
 }subFeat;
 
+typedef struct armorProficiencies{
+    bool heavy;
+    bool medium;
+    bool light;
+    bool shields;    
+}armorProficiencies;
+
+typedef struct simpleWeaponProficienies{
+    bool all;
+    bool club;
+    bool dagger;
+    bool greatclub;
+    bool handaxe;
+    bool javelin;
+    bool lightHammer;
+    bool mace;
+    bool quarterstaff;
+    bool spear;
+    bool lightCrossbow;
+    bool dart;
+    bool shortbow;
+    bool sling;
+}simpleWeaponProficienies;
+
+typedef struct maritialWeaponProficienies{
+    bool all;
+    bool battleaxe;
+    bool flail;
+    bool glaive;
+    bool greataxe;
+    bool greatsword;
+    bool halberd;
+    bool lance;
+    bool longsword;
+    bool maul;
+    bool morningstar;
+    bool pike;
+    bool rapier;
+    bool scimitar;
+    bool shortsword;
+    bool trident;
+    bool warPick;
+    bool warhammer;
+    bool whip;
+    bool blowgun;
+    bool handCrossbow;
+    bool heavyCrossbow;
+    bool longbow;
+    bool net;
+}martialWeaponProficienies;
+
 typedef struct class{
     char *name;
+    char *hitDie;
+    armorProficiencies *armor;
+    simpleWeaponProficienies *simple;
+    martialWeaponProficienies *martial;
     subClass *sub1;
     subClass *sub2;
     subClass *sub3;
@@ -29,7 +85,11 @@ typedef struct class{
     subFeat *subFeat1;
 }class;
 
-classFeat secondWind = {
+/***** Fighter *****/
+
+armorProficiencies fighterArmor = {true}
+
+const classFeat secondWind = {
     "Second Wind",
     1,
     "You have a limited well of stamina that you can draw on to protect yourself\n"
@@ -39,7 +99,7 @@ classFeat secondWind = {
     "can use it again."
 };
 
-classFeat fighterActionSurge = {
+const classFeat fighterActionSurge = {
     "Action Surge",
     2,
     "Starting at 2nd level, you can push yourself\n"
@@ -50,17 +110,18 @@ classFeat fighterActionSurge = {
     "it twice before a rest, but only once on the same turn."
 };
 
-subClass fighterChampion = {"Champion", NULL};
-subClass fighterBmaster = {"Battle Master", NULL};
+const subClass fighterChampion = {"Champion", NULL};
+const subClass fighterBmaster = {"Battle Master", NULL};
 
-classFeat fighterExtraAttack = {"Extra Attack", 5, NULL};
+const classFeat fighterExtraAttack = {"Extra Attack", 5, NULL};
 
-class fighter = {"Fighter", &fighterChampion, &fighterBmaster, NULL, &fighterActionSurge, &fighterExtraAttack, NULL};
+const class fighter = {"Fighter", "d10", &fighterChampion, &fighterBmaster, NULL, &fighterActionSurge, &fighterExtraAttack, NULL};
 
-subClass rogueThief = {"Thief", NULL};
-subClass rogueArcaneTrickster = {"Arcane Trickster", NULL};
-subClass rogueAssassin = {"Assassin", NULL};
-classFeat rogueFeat1 = {"Sneak Attack", 1, NULL};
-classFeat rogueFeat2 = {"Expertise", 2, NULL};
+/***** Rogue *****/
+const subClass rogueThief = {"Thief", NULL};
+const subClass rogueArcaneTrickster = {"Arcane Trickster", NULL};
+const subClass rogueAssassin = {"Assassin", NULL};
+const classFeat rogueFeat1 = {"Sneak Attack", 1, NULL};
+const classFeat rogueFeat2 = {"Expertise", 2, NULL};
 
-class rogue = {"Rogue", &rogueThief, &rogueArcaneTrickster, &rogueAssassin, &rogueFeat1, &rogueFeat2, NULL};
+const class rogue = {"Rogue", &rogueThief, &rogueArcaneTrickster, &rogueAssassin, &rogueFeat1, &rogueFeat2, NULL};
