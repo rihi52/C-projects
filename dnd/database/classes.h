@@ -1,19 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-// typedef struct subClass;
-// typedef struct classFeat;
-
-typedef struct class{
-    char *name;
-    char *subClass;
-    char *classFeat;
-    /*subClass subClass1;
-    subClass subClass2;
-    classFeat classFeat1;
-    classFeat classFeat2;*/
-}class;
-
 typedef struct subClass{
     char *name;
 }subClass;
@@ -23,9 +9,26 @@ typedef struct classFeat{
     int level;
 }classFeat;
 
-subClass subClass1 = {"Champion"};
-subClass subClass2 = {"Battle Master"};
-classFeat classFeat1 = {"Action Surge", 2};
-classFeat classFeat2 = {"Extra Attack", 5};
+typedef struct class{
+    char *name;
+    subClass *sub1;
+    subClass *sub2;
+    subClass *sub3;
+    classFeat *feat1;
+    classFeat *feat2;
+}class;
 
-class fighter = {"Fighter", "Champion", "Action Surge"};
+subClass fighterChampion = {"Champion"};
+subClass fighterBmaster = {"Battle Master"};
+classFeat fighterActionSurge = {"Action Surge", 2};
+classFeat fighterExtraAttack = {"Extra Attack", 5};
+
+class fighter = {"Fighter", &fighterChampion, &fighterBmaster, NULL, &fighterActionSurge, &fighterExtraAttack};
+
+subClass rogueThief = {"Thief"};
+subClass rogueArcaneTrickster = {"Arcane Trickster"};
+subClass rogueAssassin = {"Assassin"};
+classFeat rogueFeat1 = {"Sneak Attack", 1};
+classFeat rogueFeat2 = {"Expertise", 2};
+
+class rogue = {"Rogue", &rogueThief, &rogueArcaneTrickster, &rogueAssassin, &rogueFeat1, &rogueFeat2};
