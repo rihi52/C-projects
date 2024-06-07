@@ -39,18 +39,25 @@ def SqlTicketLookUp(RequesterName):
     # SQL connection
     conn = sqlite3.connect(r"C:\Users\hirer\Documents\np++\databases\kayakoexport.db")
     cursor = conn.cursor()
-    conn.text_factory = str
+    #conn.text_factory = str
     sql = 'SELECT "Case ID", "Requester Name", Subject FROM tickets WHERE "Requester Name" = "{}" LIMIT 1'.format(RequesterName)
     Namefetch = cursor.execute(sql).fetchall()
     Subject = []
-    if len(Namefetch) <= 0:
-        idLabelReturn.config(text="Not a Name", fg="black", bg="red")
-    else:
-        for i in range(3):
-            Subject.append(Namefetch[0][i])
+    #if len(Namefetch) <= 0:
+    #    idLabelReturn.config(text="Not a Name", fg="black", bg="red")
+    #else:
+        #for i in range(3):
+        #    if i == 1:
+        #        name = Namefetch[0][i]
+        #        for j in range(len(name)):
+        #            Subject.append(name[j][0])
+        #    else:
+        #        Subject.append(Namefetch[0][i])
+    for row in Namefetch:
+        Subject.append(Namefetch)
         #subjectVar = tk.StringVar(Subject)
-        conn.close()
-        ticketList.insert(tk.END, Subject)
+    conn.close()
+    ticketList.insert(tk.END, Subject)
         #choices.append(Subject)
 
 def OnClick():
