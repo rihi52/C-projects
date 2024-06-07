@@ -10,6 +10,7 @@ typedef struct part{
     char *name;
     bool uniqueChar; // True for player character or Unique Enemy
     int init;
+    int initSpot;
     int turnCount;
     int ac;
     int hp;
@@ -20,31 +21,35 @@ typedef struct part{
 /* To add more enemies, create a new part struct and point orc to it*/
 
 /* Orc Enemies */
-part orc = {"Orc", false, 0, 0, 13, 15, NULL};
+part orc = {"Orc", false, 0, 0, 0, 13, 15, NULL};
 
 /* Orog Enemies */
-part orog = {"Orog", false, 0, 0, 18, 53, &orc};
+part orog = {"Orog", false, 0, 0, 0, 18, 53, &orc};
 
 /* Magmin Enemies */
-part magmin = {"Magmin", false, 0, 0, 15, 9, &orog};
+part magmin = {"Magmin", false, 0, 0, 0, 15, 9, &orog};
 
 /* Linked list of unique part stats */
-part ildmane = {"ildmane", true, 0, 0, 18, 162, &magmin};
-part okssort = {"okssort", true, 0, 0, 17, 162, &ildmane};
+part ildmane = {"ildmane", true, 0, 0, 0, 18, 162, &magmin};
+part okssort = {"okssort", true, 0, 0, 0, 17, 162, &ildmane};
 
 /* Linked list of player stats */
-part theon = {"theon", true, 0, 0,16, 55, &okssort};
-part pax = {"pax", true, 0, 0, 16, 57, &theon};
-part finn = {"finn", true, 0, 0, 15, 36, &pax};
-part ravi = {"ravi", true, 0, 0, 16, 34, &finn};
+part theon = {"theon", true, 0, 0, 0,16, 55, &okssort};
+part pax = {"pax", true, 0, 0, 0, 16, 57, &theon};
+part finn = {"finn", true, 0, 0, 0, 15, 36, &pax};
+part ravi = {"ravi", true, 0, 0, 0, 16, 34, &finn};
 
 /* Global Variables*/
-int initSpread = 30;
+const int initSpread = 30;
+int highestInit = 30;
 int currentInit = 0;
 int roundCount = 0;
+int numCombatants = 1;
+part *combatants[initSpread];
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
+void makeListofCombatants(struct part *head);
 void printCurrentTurn(struct part *head);
 void printInitOrder(struct part *head);
 part *createNode(struct part *enemy);
@@ -121,6 +126,29 @@ int main(void)
         tail = newEnemy;
     }
 
+    part *tempCount = NULL;
+    tempCount = head;
+    while(tempCount != NULL)
+    {
+        if (tempCount->next == NULL)
+        {
+            break;
+        }
+        else if (tempCount->init < tempCount->next->init)
+        {
+            highestInit = tempCount->next->init;
+        }
+        tempCount = tempCount->next;
+        numCombatants++;
+    }
+
+    for(int i = 0; i < highestInit; i++)
+    {
+        combatants[i] == NULL;
+    }
+
+    makeListofCombatants(head);
+
     printInitOrder(head);
     printCurrentTurn(head);
 
@@ -144,7 +172,6 @@ int main(void)
             break;
             case 'n':
             printf("Next Turn\n");
-            roundCount++;
             printCurrentTurn(head);            
             break;
             default:
@@ -219,9 +246,28 @@ part *createNode(struct part *enemy)
     return new;
 }
 
+void makeListofCombatants(struct part *head)
+{
+    part *temp = head;
+    while(temp != NULL)
+    {
+        if(combatants[temp->init] == NULL)
+        {
+            combatants[temp->init] = temp;
+        }
+        else
+        {
+            combatants[temp->init]->next = temp;
+        }
+        temp = temp->next;
+    }
+}
+
+
 void printCurrentTurn(struct part *head)
 {
     part *temp = head;
+    int count = 1;
 
     if (roundCount == 0 && currentInit == 0)
     {
@@ -243,7 +289,8 @@ void printCurrentTurn(struct part *head)
         {
             if (temp->init == currentInit && temp->hp > 0 && temp->turnCount == roundCount)
             {
-                currentInit = temp->init;
+                if (temp->init == count) break;
+                count++;
             }
             else
             {
@@ -272,7 +319,7 @@ void printInitOrder(struct part *head)
             if (temp->init == i && temp->hp > 0)
             {
                 printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
-                temp->turnCount = count;
+                temp->initSpot = count;
                 count++;
             }
             temp = temp->next;
