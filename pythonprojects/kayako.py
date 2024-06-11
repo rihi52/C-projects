@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
-import re
 
 window=tk.Tk()
 window.title("Read Kayako Ticket V0.0")
+window.minsize(width=1020, height=300)
 
-canvas1=tk.Canvas(window,width=1000,height=250)
-canvas1.pack()
+#canvas1=tk.Canvas(window,width=1000,height=250)
+#canvas1.pack()
 
 def SqlIDLookUp(IDlookUp):
     # SQL connection
@@ -25,7 +25,7 @@ def SqlIDLookUp(IDlookUp):
     for rows in range(numRows):        
         for i in range (5):
             Subject.append(Namefetch[rows][i])
-        ticketList.insert("", tk.END, values =(Subject))
+        ticketList.insert("", tk.END, values =(Subject), tags = ('evenrow',))
         Subject = []
     conn.close()
 
@@ -33,7 +33,6 @@ def SqlTicketLookUp(RequesterName):
     # SQL connection
     conn = sqlite3.connect(r"C:\Users\hirer\Documents\np++\databases\kayakoexport.db")
     cursor = conn.cursor()
-    #conn.text_factory = str
     sql = cursor.execute('SELECT "Case ID", "Requester Name", Subject, "Conversation Order Number", "Conversation Press Type & Serial Number" FROM tickets WHERE "Requester Name"=?', (RequesterName,))
     Namefetch = sql.fetchall()
     numRows = 0
@@ -45,7 +44,10 @@ def SqlTicketLookUp(RequesterName):
     for rows in range(numRows):        
         for i in range (5):
             Subject.append(Namefetch[rows][i])
-        ticketList.insert("", tk.END, values =(Subject))
+        if rows % 2 == 0:
+            ticketList.insert("", tk.END, values =(Subject), tags = ('evenrow',))
+        else:
+            ticketList.insert("", tk.END, values =(Subject), tags = ('oddrow',))
         Subject = []
     conn.close()
 
@@ -53,13 +55,8 @@ def SqlContentsLookUp(IDcontents):
         # SQL connection
     conn = sqlite3.connect(r"C:\Users\hirer\Documents\np++\databases\kayakoexport.db")
     cursor = conn.cursor()
-    #conn.text_factory = str
     sql = cursor.execute('SELECT Status FROM tickets WHERE "Case ID"=?', (IDcontents,))
     Namefetch = sql.fetchall()
-    #if len(Namefetch) <= 0:
-    #    idLabelReturn.config(text="Not a Name", fg="black", bg="red")
-    #else:    
-    #    idLabelNewWindow.config(text=Namefetch[0][0])
     conn.close()
     return Namefetch[0][0]
 
@@ -83,46 +80,67 @@ def OpenDetails():
     myValues = ticketList.item(curItem, 'values')
     LookUp=myValues[0]
     newWindow= tk.Toplevel()
-    statusText = SqlContentsLookUp(LookUp)
-    StatusTextOutput = tk.Text(master=newWindow)
-    StatusTextOutput.insert("1.0", statusText)
-    StatusTextOutput.pack()
-    StatusTextOutput.configure(state="disabled")
-    #idLabelNewWindow = tk.Label(master=newWindow, text=statusText, fg="white", bg="black")
-    #idLabelNewWindow.pack()    
+    contentsText = SqlContentsLookUp(LookUp)
+    contentsTextOutput = tk.Text(master=newWindow)
+    contentsTextOutput.insert("1.0", contentsText)
+    contentsTextOutput.pack()
+    contentsTextOutput.configure(state="disabled")   
     newWindow.title("New Window")
 
-# Top label, ID entry, and button
+#### Frames ####
+# ID Search
 frame1 = tk.Frame(window)
-frame1.place(x=0, y=0)
+frame1.grid(row=0,column=0)
 
 # Requester name Search
 frame2 = tk.Frame(window)
-frame2.place(x=150, y=0)
+frame2.grid(row=0,column=1)
 
-# ID entry label, entry, and button
-idLabelNew = tk.Label(master=frame1, text="New Ticket ID", fg="white", bg="black")
-idLabelNew.pack()
+# Buttons
+frame3 = tk.Frame(window)
+frame3.grid(row=0,column=2)
+
+# Treeview
+frame4 = tk.Frame(window)
+frame4.grid(row=1,column=0, columnspan=3, rowspan=5)
+
+#### Widgets ####
+# ID entry label and entry
+idLabelNew = tk.Label(master=frame1, relief='raised', text="New Ticket ID", fg="white", bg="black")
+idLabelNew.pack(side='top')
 idEntry = tk.Entry(master=frame1)
-idEntry.pack()
-button = tk.Button(master=frame1, text="Search", command=OnClick)
-button.pack()
+idEntry.pack(side='top')
+
+# Search Button
+button = tk.Button(master=frame3, text="Search", command=OnClick)
+button.pack(side='top')
 
 # Requester Name Input
-idLabelRequesterName = tk.Label(master=frame2, text="Requester Name", fg="white", bg="black")
+idLabelRequesterName = tk.Label(master=frame2, text="Requester Name", relief='raised', fg="white", bg="black")
 idLabelRequesterName.pack()
 idRequesterNameEntry = tk.Entry(master=frame2)
 idRequesterNameEntry.pack()
-button2 = tk.Button(master=frame2, text="Open", command=OpenDetails)
+
+# Open Details Button
+button2 = tk.Button(master=frame3, text="Open", command=OpenDetails)
 button2.pack()
 
 # Ticket List
-cols = ("Ticket ID","Requester","Subject", "Order Number", "Press Type & Serial Number")
-ticketList = ttk.Treeview(master=window, columns=cols, show="headings")
+cols = ("Ticket ID","Requester", "Subject", "Order Number", "Press Type & Serial Number")
+ticketList = ttk.Treeview(master=frame4, columns=cols, show="headings", selectmode ='browse')
+ticketList.tag_configure('evenrow', background='light blue')
+ticketList.tag_configure('oddrow', background='white')
 for col in cols:
     ticketList.heading(col, text=col)
-ticketList.column("Ticket ID", width=75, anchor='center')
-#ticketList.bind("<Double-Button-1>", OnDoubleClick())
-ticketList.pack(fill=tk.X)
+ticketList.column("Ticket ID", width=100, stretch='YES', anchor='center')
+ticketList.column("Requester", width=100, stretch='YES', anchor='center')
+ticketList.column("Order Number", width=100, stretch='YES', anchor='center')
+ticketList.column("Press Type & Serial Number", width=500, stretch='YES', anchor='center')
+ticketList.pack(side='left', fill='y')
+
+verscrlbar = ttk.Scrollbar(master=frame4, orient="vertical", command = ticketList.yview)
+verscrlbar.pack(side='right', fill='y')
+
+ticketList.configure(yscrollcommand = verscrlbar.set)
 
 window.mainloop()
