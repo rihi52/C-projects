@@ -3,6 +3,7 @@
         "stdio.h": "c",
         "array": "c",
         "stdlib.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "proficiencies.h": "c"
     }
 }
