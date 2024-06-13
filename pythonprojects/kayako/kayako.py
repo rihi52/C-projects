@@ -11,7 +11,7 @@ window.minsize(width=1020, height=300)
 
 def SqlIDLookUp(IDlookUp):
     # SQL connection
-    conn = sqlite3.connect(r"C:\Users\hirer\Documents\np++\databases\kayakoexport.db")
+    conn = sqlite3.connect(r"kayakoexport.db")
     cursor = conn.cursor()
     conn.text_factory = str
     sql = cursor.execute('SELECT "Case ID", "Requester Name", Subject, "Conversation Order Number", "Conversation Press Type & Serial Number" FROM tickets WHERE "Case ID"=?',(IDlookUp,))
@@ -31,7 +31,7 @@ def SqlIDLookUp(IDlookUp):
 
 def SqlTicketLookUp(RequesterName):
     # SQL connection
-    conn = sqlite3.connect(r"C:\Users\hirer\Documents\np++\databases\kayakoexport.db")
+    conn = sqlite3.connect(r"kayakoexport.db")
     cursor = conn.cursor()
     sql = cursor.execute('SELECT "Case ID", "Requester Name", Subject, "Conversation Order Number", "Conversation Press Type & Serial Number" FROM tickets WHERE "Requester Name"=?', (RequesterName,))
     Namefetch = sql.fetchall()
@@ -53,7 +53,7 @@ def SqlTicketLookUp(RequesterName):
 
 def SqlContentsLookUp(IDcontents):
         # SQL connection
-    conn = sqlite3.connect(r"C:\Users\hirer\Documents\np++\databases\kayakoexport.db")
+    conn = sqlite3.connect(r"kayakoexport.db")
     cursor = conn.cursor()
     sql = cursor.execute('SELECT Status FROM tickets WHERE "Case ID"=?', (IDcontents,))
     Namefetch = sql.fetchall()
