@@ -144,12 +144,13 @@ int main(void)
 
     for(int i = 0; i < highestInit; i++)
     {
-        combatants[i] == NULL;
+        combatants[i] = NULL;
     }
 
     makeListofCombatants(head);
 
     printInitOrder(head);
+    printf("%i\n", numCombatants);
     printCurrentTurn(head);
 
     while (combat == true){
