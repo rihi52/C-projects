@@ -2,40 +2,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "proficiencies.h"
+#include "defines.h"
 
-typedef const struct class{
-    armorProf profs;
-}class;
+struct class{
+    char *name;
+    int hitDie;
+    // armorProf profs;
+};
 
-class barbarian = { {"Light",
-                    NULL, /**/
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL}};
-
-/*= {   "Light",
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL
-                };*/
+const struct class fifthEd[] ={
+ [BARBARIAN] = {"Barbarian", 12},
+ [BARD] = {"Bard", 8},
+};
