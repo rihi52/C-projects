@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include "sqlite3.h"
 #include "classes.h"
+#include "classfeats.h"
 
 int main(void)
 {
-	printf("%s, Hit Die: d%i\n", fifthEd[BARBARIAN].name, fifthEd[BARBARIAN].hitDie);
+	printf("%s, Hit Die: d%i\n%s", fifthEd[BARBARIAN].name, fifthEd[BARBARIAN].hitDie, barb[0]);
 //     sqlite3 *db;
 //     sqlite3_stmt *stmt;
 //     int rc;

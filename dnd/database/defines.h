@@ -31,6 +31,12 @@
 // #define SPLINT_PLATE    13
 // #define FULL_PLATE      14
 
+ /* Barbarian defines*/
+#define RAGE 0
+#define UNARMORED_DEFENSE 1
+#define RECKLESS_ATTACK 2
+#define DANGER_SENSE 3
+
 struct classLevelInfo{
     int first; /* 1 if reached else 0*/
     int second;
