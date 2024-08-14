@@ -17,6 +17,8 @@ typedef struct part{
     struct part *next;
 }part;
 
+part enemies[] = {{"Orc", false, 0, 0, 0, 13, 15, NULL}, {"Orog", false, 0, 0, 0, 18, 53, NULL}}; // Test
+
 /***** Combatants *****/
 /* To add more enemies, create a new part struct and point orc to it*/
 
@@ -126,12 +128,15 @@ int main(void)
         tail = newEnemy;
     }
 
-    part *tempCount = NULL;
-    tempCount = head;
+    /* Count total combatants */
+    part *tempCount = head;
+    // tempCount = head; blacked out for testing
     while(tempCount != NULL)
     {
         if (tempCount->next == NULL)
         {
+            numCombatants++;
+            tempCount = tempCount->next;
             break;
         }
         else if (tempCount->init < tempCount->next->init)
@@ -147,12 +152,14 @@ int main(void)
         combatants[i] = NULL;
     }
 
+/* Program gets stuck here */
     makeListofCombatants(head);
 
     printInitOrder(head);
     printf("%i\n", numCombatants);
     printCurrentTurn(head);
 
+ /* Main loop for combat */
     while (combat == true){
         printf("What happens: ");
         scanf(" %c", &event);
@@ -205,6 +212,7 @@ void setInitiative(struct part *person, int size)
         }
         printf("%s's initiative: ", current->name);
         scanf("%i", &current->init);
+        combatants[current->init] = current;
         current = current->next;
     }
     return;
