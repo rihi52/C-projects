@@ -157,7 +157,7 @@ int main(void)
     }
    
     makeListofCombatants(head);
-
+/* comments */
     printInitOrder(head);
     printf("%i\n", numCombatants);
     /* Program sticks here now */
