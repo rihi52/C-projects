@@ -328,7 +328,7 @@ void printInitOrder(struct part *head)
         count = 1;
         while (temp != NULL)
         {
-            if (temp->init == i && temp->hp > 0)
+            if (temp->init == i && temp->hp > 0) /* Does the given combatant's initiative match i? If yes, print */
             {
                 printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
                 temp->initSpot = count;
