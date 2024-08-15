@@ -4,6 +4,7 @@
         "array": "c",
         "stdlib.h": "c",
         "time.h": "c",
-        "proficiencies.h": "c"
+        "proficiencies.h": "c",
+        "typeinfo": "c"
     }
 }

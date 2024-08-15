@@ -155,6 +155,13 @@ int main(void)
     {
         combatants[i] = NULL;
     }
+    
+    /* DEBUG */
+    tempCount = head;
+    while(tempCount != NULL){
+        printf("Init: %i Name: %s, AC: %i, HP: %i\n", tempCount->init, tempCount->name, tempCount->ac, tempCount->hp); /*DEBUG*/
+        tempCount = tempCount->next;
+    }
    
     makeListofCombatants(head);
     printInitOrder(head);
@@ -235,6 +242,7 @@ part *createNode(struct part *enemy)
         new->hp = orc.hp;
         new->init = orc.init;        
         new->next = NULL;
+        printf("Init: %i Name: %s, AC: %i, HP: %i\n", new->init, new->name, new->ac, new->hp); /*DEBUG*/
     }
     else if(enemy == &orog)
     {
@@ -244,6 +252,7 @@ part *createNode(struct part *enemy)
         new->hp = orog.hp;
         new->init = orog.init;        
         new->next = NULL;
+        printf("Init: %i Name: %s, AC: %i, HP: %i\n", new->init, new->name, new->ac, new->hp); /*DEBUG*/
     }
     else if(enemy == &magmin)
     {
@@ -253,11 +262,12 @@ part *createNode(struct part *enemy)
         new->hp = magmin.hp;
         new->init = magmin.init;        
         new->next = NULL;
+        printf("Init: %i Name: %s, AC: %i, HP: %i\n", new->init, new->name, new->ac, new->hp); /*DEBUG*/
     }
     return new;
 }
 
-void makeListofCombatants(struct part *head)
+void makeListofCombatants(struct part *head) /* Array of combatants by initiative order, use this for printing */
 {    
     part *temp = head;
     // printf("%i\n",temp->init);
