@@ -17,7 +17,7 @@ typedef struct part{
     struct part *next;
 }part;
 
-part enemies[] = {{"Orc", false, 0, 0, 0, 13, 15, NULL}, {"Orog", false, 0, 0, 0, 18, 53, NULL}}; // Test
+part enemies[] = {{"Orc", false, 0, 0, 0, 13, 15, NULL}, {"Orog", false, 0, 0, 0, 18, 53, NULL}}; // Test - do I need individually named structs or array of structs?
 
 /***** Combatants *****/
 /* To add more enemies, create a new part struct and point orc to it*/
@@ -157,9 +157,8 @@ int main(void)
     }
    
     makeListofCombatants(head);
-/* comments */
     printInitOrder(head);
-    printf("%i\n", numCombatants);
+    printf("%i\n", numCombatants); // DEBUG
     /* Program sticks here now */
     printCurrentTurn(head);
 
