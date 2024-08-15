@@ -42,7 +42,7 @@ part finn = {"finn", true, 0, 0, 0, 15, 36, &pax};
 part ravi = {"ravi", true, 0, 0, 0, 16, 34, &finn};
 
 /* Global Variables*/
-const int initSpread = 30;
+#define initSpread 30
 int highestInit = 30;
 int currentInit = 0;
 int roundCount = 0;
@@ -70,12 +70,16 @@ int main(void)
     part *head = &ravi;
     part *tail = &orc;
     
+    for(int i = 0; i < initSpread; i++){
+        combatants[i] = NULL;
+    }
+
     /* Assign player and unique initiative */
     setInitiative(&ravi, numPlayer);
 
     part *newEnemy;
     
-    /* part count */
+    /* part count - establish how many enemies of which type*/
     printf("How many %s: ", orc.name);
     scanf("%i", &numOrc);
    
@@ -91,7 +95,7 @@ int main(void)
 
     for(int i = 0; i < numOrc - 1; i++)
     {
-        if(numOrc <= 1)
+        if(numOrc <= 1) /* Case for no enemies of a given type */
         {
             break;
         }
@@ -130,7 +134,7 @@ int main(void)
 
     /* Count total combatants */
     part *tempCount = head;
-    // tempCount = head; blacked out for testing
+    // tempCount = head; blacked out for testing, don't think I need this at all
     while(tempCount != NULL)
     {
         if (tempCount->next == NULL)
@@ -151,12 +155,12 @@ int main(void)
     {
         combatants[i] = NULL;
     }
-
-/* Program gets stuck here */
+   
     makeListofCombatants(head);
 
     printInitOrder(head);
     printf("%i\n", numCombatants);
+    /* Program sticks here now */
     printCurrentTurn(head);
 
  /* Main loop for combat */
@@ -212,7 +216,6 @@ void setInitiative(struct part *person, int size)
         }
         printf("%s's initiative: ", current->name);
         scanf("%i", &current->init);
-        combatants[current->init] = current;
         current = current->next;
     }
     return;
@@ -256,8 +259,9 @@ part *createNode(struct part *enemy)
 }
 
 void makeListofCombatants(struct part *head)
-{
+{    
     part *temp = head;
+    // printf("%i\n",temp->init);
     while(temp != NULL)
     {
         if(combatants[temp->init] == NULL)
