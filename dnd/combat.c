@@ -131,7 +131,7 @@ int main(void)
         tail->next = newEnemy;
         tail = newEnemy;
     }
-    printf("End acquiring enemies\n");
+    printf("\nEnd acquiring enemies\n\n"); // DEBUG
 
     /* Count total combatants */
     part *tempCount = head;
@@ -156,19 +156,9 @@ int main(void)
     {
         combatants[i] = NULL;
     }
-    
-    /* DEBUG */
-    tempCount = head;
-    while(tempCount != NULL){
-        printf("Init: %i Name: %s, AC: %i, HP: %i\n", tempCount->init, tempCount->name, tempCount->ac, tempCount->hp); /*DEBUG*/
-        tempCount = tempCount->next;
-    }
-    printf("End debug print\n");
    
     makeListofCombatants(head);
     printInitOrder(head);
-    printf("%i\n", numCombatants); // DEBUG
-    /* Program sticks here now */
     printCurrentTurn(head);
 
  /* Main loop for combat */
@@ -244,7 +234,6 @@ part *createNode(struct part *enemy)
         new->hp = orc.hp;
         new->init = orc.init;        
         new->next = NULL;
-        printf("Init: %i Name: %s, AC: %i, HP: %i\n", new->init, new->name, new->ac, new->hp); /*DEBUG*/
     }
     else if(enemy == &orog)
     {
@@ -254,7 +243,6 @@ part *createNode(struct part *enemy)
         new->hp = orog.hp;
         new->init = orog.init;        
         new->next = NULL;
-        printf("Init: %i Name: %s, AC: %i, HP: %i\n", new->init, new->name, new->ac, new->hp); /*DEBUG*/
     }
     else if(enemy == &magmin)
     {
@@ -264,7 +252,6 @@ part *createNode(struct part *enemy)
         new->hp = magmin.hp;
         new->init = magmin.init;        
         new->next = NULL;
-        printf("Init: %i Name: %s, AC: %i, HP: %i\n", new->init, new->name, new->ac, new->hp); /*DEBUG*/
     }
     return new;
 }
@@ -285,18 +272,17 @@ void makeListofCombatants(struct part *head) /* Array of combatants by initiativ
             temp = temp->next; /* Save spot in loop through head */
             combatants[tempInit]->next = NULL; /* Make array->next NULL */
         }
-        else
-        { /* Start this with while loop to check combatants[temp->init]->next for NULL, which would be set above */
-            tempInit = temp->init;                  /* Save initiative number */
-            combatants[temp->init]->next = temp;    /* Linked list in array */
-            temp = temp->next;                      /* Save spot in loop through head */
-            tempLoop = combatants[tempInit]->next;  /* Save location just entered to array */
-            while(tempLoop != NULL){ /* Need to set new ->next to NULL */
-
+        else /* combatants[initiative] is occupied so make a linked list */
+        {
+            tempInit = temp->init;  /* Save initiative number */
+            tempLoop = combatants[temp->init]->next; /* Set tempLoop to ->next of the current combatants[initiative]*/
+            while(tempLoop != NULL){ /* Loop through tempLoop (linked list in current array position) until at the next empty position */
+                tempLoop = tempLoop->next;
             }
-            combatants[tempInit]->next = NULL;
-        }
-        
+            tempLoop = temp; /* Set empty position to the current combatant */
+            temp = temp->next; /* Set current combatant to the next one in the head list */
+            tempLoop->next = NULL; /* set combatants[] last position to NULL */
+        }        
     }
 }
 
