@@ -131,6 +131,7 @@ int main(void)
         tail->next = newEnemy;
         tail = newEnemy;
     }
+    printf("End acquiring enemies\n");
 
     /* Count total combatants */
     part *tempCount = head;
@@ -162,6 +163,7 @@ int main(void)
         printf("Init: %i Name: %s, AC: %i, HP: %i\n", tempCount->init, tempCount->name, tempCount->ac, tempCount->hp); /*DEBUG*/
         tempCount = tempCount->next;
     }
+    printf("End debug print\n");
    
     makeListofCombatants(head);
     printInitOrder(head);
@@ -270,18 +272,31 @@ part *createNode(struct part *enemy)
 void makeListofCombatants(struct part *head) /* Array of combatants by initiative order, use this for printing */
 {    
     part *temp = head;
+    part *tempLoop;
+    int tempInit = 0;
     // printf("%i\n",temp->init);
     while(temp != NULL)
     {
+        tempInit = 0;
         if(combatants[temp->init] == NULL)
         {
+            tempInit = temp->init;
             combatants[temp->init] = temp;
+            temp = temp->next; /* Save spot in loop through head */
+            combatants[tempInit]->next = NULL; /* Make array->next NULL */
         }
         else
-        {
-            combatants[temp->init]->next = temp;
+        { /* Start this with while loop to check combatants[temp->init]->next for NULL, which would be set above */
+            tempInit = temp->init;                  /* Save initiative number */
+            combatants[temp->init]->next = temp;    /* Linked list in array */
+            temp = temp->next;                      /* Save spot in loop through head */
+            tempLoop = combatants[tempInit]->next;  /* Save location just entered to array */
+            while(tempLoop != NULL){ /* Need to set new ->next to NULL */
+
+            }
+            combatants[tempInit]->next = NULL;
         }
-        temp = temp->next;
+        
     }
 }
 
@@ -329,25 +344,42 @@ void printCurrentTurn(struct part *head)
 
 void printInitOrder(struct part *head)
 {
-    part *temp = head;
+    // part *temp = head;
+    part *temp;
     int count = 1;
     printf("\n****** Intiative Order Start******\n\n");
 
-    for(int i = initSpread; i > 0; i--)
-    {
+    for(int i = initSpread; i > 0; i--){
         count = 1;
-        while (temp != NULL)
-        {
-            if (temp->init == i && temp->hp > 0) /* Does the given combatant's initiative match i? If yes, print */
-            {
+        if(combatants[i] != NULL){
+            printf("%i-%i. %s, AC: %i, HP: %i\n", combatants[i]->init, count, combatants[i]->name, combatants[i]->ac, combatants[i]->hp);
+            combatants[i]->initSpot = count;
+            count++;
+            temp = combatants[i];
+            while(temp->next != NULL){
+                temp = temp->next;
                 printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
-                temp->initSpot = count;
-                count++;
+                combatants[i]->initSpot = count;
+                count++;                
             }
-            temp = temp->next;
         }
-        temp = head;
     }
+
+    // for(int i = initSpread; i > 0; i--)
+    // {
+    //     count = 1;
+    //     while (temp != NULL)
+    //     {
+    //         if (temp->init == i && temp->hp > 0) /* Does the given combatant's initiative match i? If yes, print */
+    //         {
+    //             printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
+    //             temp->initSpot = count;
+    //             count++;
+    //         }
+    //         temp = temp->next;
+    //     }
+    //     temp = head;
+    // }
     printf("\n****** Intiative Order End ******\n");
     return;
 }
