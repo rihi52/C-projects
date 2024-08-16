@@ -341,12 +341,12 @@ void printInitOrder(struct part *head)
             printf("%i-%i. %s, AC: %i, HP: %i\n", combatants[i]->init, count, combatants[i]->name, combatants[i]->ac, combatants[i]->hp);
             combatants[i]->initSpot = count;
             count++;
-            temp = combatants[i];
-            while(temp->next != NULL){
-                temp = temp->next;
+            temp = combatants[i]->next;
+            while(temp != NULL){                
                 printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
                 combatants[i]->initSpot = count;
-                count++;                
+                count++;     
+                temp = temp->next;           
             }
         }
     }
