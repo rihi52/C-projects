@@ -158,6 +158,11 @@ int main(void)
     }
    
     makeListofCombatants(head);
+
+    // for(int i = initSpread; i < 0; i--){
+
+    // }
+
     printInitOrder(head);
     printCurrentTurn(head);
 
@@ -268,14 +273,14 @@ void makeListofCombatants(struct part *head) /* Array of combatants by initiativ
         if(combatants[temp->init] == NULL)
         {
             tempInit = temp->init;
-            combatants[temp->init] = temp;
+            combatants[tempInit] = temp;
             temp = temp->next; /* Save spot in loop through head */
             combatants[tempInit]->next = NULL; /* Make array->next NULL */
         }
         else /* combatants[initiative] is occupied so make a linked list */
         {
             tempInit = temp->init;  /* Save initiative number */
-            tempLoop = combatants[temp->init]->next; /* Set tempLoop to ->next of the current combatants[initiative]*/
+            tempLoop = combatants[temp->init]; /* Set tempLoop to ->next of the current combatants[initiative]*/
             while(tempLoop != NULL){ /* Loop through tempLoop (linked list in current array position) until at the next empty position */
                 tempLoop = tempLoop->next;
             }
@@ -337,14 +342,15 @@ void printInitOrder(struct part *head)
 
     for(int i = initSpread; i > 0; i--){
         count = 1;
-        if(combatants[i] != NULL){
-            printf("%i-%i. %s, AC: %i, HP: %i\n", combatants[i]->init, count, combatants[i]->name, combatants[i]->ac, combatants[i]->hp);
-            combatants[i]->initSpot = count;
-            count++;
-            temp = combatants[i]->next;
+        temp = combatants[i];
+        if(/*combatants[i] != NULL*/ temp != NULL){
+            // printf("%i-%i. %s, AC: %i, HP: %i\n", combatants[i]->init, count, combatants[i]->name, combatants[i]->ac, combatants[i]->hp);
+            // combatants[i]->initSpot = count;
+            // count++;
+            
             while(temp != NULL){                
                 printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
-                combatants[i]->initSpot = count;
+                temp->initSpot = count;
                 count++;     
                 temp = temp->next;           
             }
