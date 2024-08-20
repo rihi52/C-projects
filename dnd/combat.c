@@ -92,6 +92,7 @@ int main(void)
     /* Assign Enemy Initiative */
     printf("%s's initiative: ", orc.name);
     scanf("%i", &orc.init);
+    *combatants[orc.init] = orc;
 
     for(int i = 0; i < numOrc - 1; i++)
     {
@@ -106,6 +107,7 @@ int main(void)
 
     printf("%s's initiative: ", orog.name);
     scanf("%i", &orog.init);
+    // combatants[orog.init]= &orog;
 
     for(int i = 0; i < numOrog - 1; i++)
     {
@@ -120,6 +122,7 @@ int main(void)
 
     printf("%s's initiative: ", magmin.name);
     scanf("%i", &magmin.init);
+    // combatants[magmin.init]= &magmin;
     
     for(int i = 0; i < numMagmin - 1; i++)
     {
@@ -157,7 +160,7 @@ int main(void)
         combatants[i] = NULL;
     }
    
-    makeListofCombatants(head);
+    // makeListofCombatants(head); DEBUG - blacked out to test not using it
 
     // for(int i = initSpread; i < 0; i--){
 
@@ -248,6 +251,7 @@ part *createNode(struct part *enemy)
         new->hp = orog.hp;
         new->init = orog.init;        
         new->next = NULL;
+        combatants[orog.init]->next = new;
     }
     else if(enemy == &magmin)
     {
@@ -257,6 +261,7 @@ part *createNode(struct part *enemy)
         new->hp = magmin.hp;
         new->init = magmin.init;        
         new->next = NULL;
+        combatants[magmin.init]->next = new;
     }
     return new;
 }
