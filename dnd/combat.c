@@ -78,6 +78,7 @@ int main(void)
     setInitiative(&ravi, numPlayer);
 
     part *newEnemy;
+    part *temp;
     
     /* part count - establish how many enemies of which type*/
     printf("How many %s: ", orc.name);
@@ -92,45 +93,66 @@ int main(void)
     /* Assign Enemy Initiative */
     printf("%s's initiative: ", orc.name);
     scanf("%i", &orc.init);
-    *combatants[orc.init] = orc;
 
-    for(int i = 0; i < numOrc - 1; i++)
+    for(int i = 0; i < numOrc; i++)
     {
         if(numOrc <= 1) /* Case for no enemies of a given type */
         {
             break;
         }
         newEnemy = createNode(&orc);
+        temp = combatants[orc.init];
+        if (combatants[orc.init] == NULL){
+            combatants[orc.init] = newEnemy;
+        }
+        while(temp != NULL){
+            temp = temp->next;
+        }
+        temp = newEnemy;
         tail->next = newEnemy;
         tail = newEnemy;
     }
 
     printf("%s's initiative: ", orog.name);
     scanf("%i", &orog.init);
-    // combatants[orog.init]= &orog;
 
-    for(int i = 0; i < numOrog - 1; i++)
+    for(int i = 0; i < numOrog; i++)
     {
         if(numOrog <= 1)
         {
             break;
         }
         newEnemy = createNode(&orog);
+        temp = combatants[orog.init];
+        if (combatants[orog.init] == NULL){
+            combatants[orog.init] = newEnemy;
+        }
+        while(temp != NULL){
+            temp = temp->next;
+        }
+        temp = newEnemy;
         tail->next = newEnemy;
         tail = newEnemy;
     }
 
     printf("%s's initiative: ", magmin.name);
     scanf("%i", &magmin.init);
-    // combatants[magmin.init]= &magmin;
     
-    for(int i = 0; i < numMagmin - 1; i++)
+    for(int i = 0; i < numMagmin; i++)
     {
         if(numMagmin <= 1)
         {
             break;
         }
         newEnemy = createNode(&magmin);
+        temp = combatants[magmin.init];
+        if (combatants[magmin.init] == NULL){
+            combatants[magmin.init] = newEnemy;
+        }
+        while(temp != NULL){
+            temp = temp->next;
+        }
+        temp = newEnemy;
         tail->next = newEnemy;
         tail = newEnemy;
     }
@@ -200,7 +222,7 @@ int main(void)
     }
 
     /* Free mallocs */
-    part *temp = NULL;
+    temp = NULL;
     part *current = orc.next;
     while(current != NULL){
         temp = current;
@@ -214,6 +236,9 @@ int main(void)
 void setInitiative(struct part *person, int size)
 {
     part *current = person;
+    part new = {person->name, person->uniqueChar, person->init, person->initSpot, person->turnCount, person->ac, person->hp, NULL};
+    // part *playerCopy = malloc(sizeof(part));
+    // *playerCopy = *person;
 
     while (current->next != NULL){
         if (current->uniqueChar == false)
@@ -222,6 +247,15 @@ void setInitiative(struct part *person, int size)
         }
         printf("%s's initiative: ", current->name);
         scanf("%i", &current->init);
+        new.name = current->name;
+        new.uniqueChar = current->uniqueChar;
+        new.init = current->init;
+        new.initSpot = current->initSpot;
+        new.turnCount = current->turnCount;
+        new.ac = current->ac;
+        new.hp = current->hp;
+        new.next = NULL;
+        combatants[current->init] = &new;
         current = current->next;
     }
     return;
@@ -251,7 +285,7 @@ part *createNode(struct part *enemy)
         new->hp = orog.hp;
         new->init = orog.init;        
         new->next = NULL;
-        combatants[orog.init]->next = new;
+        /*combatants[orog.init]->next = new;*/
     }
     else if(enemy == &magmin)
     {
@@ -261,7 +295,7 @@ part *createNode(struct part *enemy)
         new->hp = magmin.hp;
         new->init = magmin.init;        
         new->next = NULL;
-        combatants[magmin.init]->next = new;
+        /*combatants[magmin.init]->next = new;*/
     }
     return new;
 }
