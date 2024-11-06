@@ -57,6 +57,8 @@ void printInitOrder(struct part *head);
 part *createNode(struct part *enemy);
 void dealDamage(struct part *head, int init, int count, int amount);
 
+void checkIntegerInputs(int *numberOf);
+
 int main(void)
 {
     int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2, damaged = 0, damAmount = 0, damInit = 0;
@@ -74,25 +76,32 @@ int main(void)
         combatants[i] = NULL;
     }
 
+    printf("\nBegin acquiring player character information\n");
+
     /* Assign player and unique initiative */
     setInitiative(&ravi, numPlayer);
+    printf("\nEnd acquiring player character information\n");
+    printf("\nBegin acquiring enemy information\n");
 
     part *newEnemy;
     
     /* part count - establish how many enemies of which type*/
     printf("How many %s: ", orc.name);
-    scanf("%i", &numOrc);
+    checkIntegerInputs(&numOrc);
    
     printf("How many %s: ", orog.name);
-    scanf("%i", &numOrog);
+    checkIntegerInputs(&numOrog);
 
     printf("How many %s: ", magmin.name);
-    scanf("%i", &numMagmin);
+    checkIntegerInputs(&numMagmin);
 
     /* Assign Enemy Initiative */
-    printf("%s's initiative: ", orc.name);
-    scanf("%i", &orc.init);
-    *combatants[orc.init] = orc;
+    if (0 < numOrc)
+    {
+        printf("%s's initiative: ", orc.name);
+        checkIntegerInputs(&orc.init);
+        *combatants[orc.init] = orc;
+    }
 
     for(int i = 0; i < numOrc - 1; i++)
     {
@@ -105,9 +114,12 @@ int main(void)
         tail = newEnemy;
     }
 
-    printf("%s's initiative: ", orog.name);
-    scanf("%i", &orog.init);
-    // combatants[orog.init]= &orog;
+    if (0 < numOrog)
+    {
+        printf("%s's initiative: ", orog.name);
+        checkIntegerInputs(&orog.init);
+        // combatants[orog.init]= &orog;
+    }
 
     for(int i = 0; i < numOrog - 1; i++)
     {
@@ -120,9 +132,12 @@ int main(void)
         tail = newEnemy;
     }
 
-    printf("%s's initiative: ", magmin.name);
-    scanf("%i", &magmin.init);
-    // combatants[magmin.init]= &magmin;
+    if (0 < numMagmin)
+    {
+        printf("%s's initiative: ", magmin.name);
+        checkIntegerInputs(&magmin.init);
+        // combatants[magmin.init]= &magmin;
+    }
     
     for(int i = 0; i < numMagmin - 1; i++)
     {
@@ -134,7 +149,7 @@ int main(void)
         tail->next = newEnemy;
         tail = newEnemy;
     }
-    printf("\nEnd acquiring enemies\n\n"); // DEBUG
+    printf("\nEnd acquiring enemy information\n\n");
 
     /* Count total combatants */
     part *tempCount = head;
@@ -221,10 +236,29 @@ void setInitiative(struct part *person, int size)
             break;
         }
         printf("%s's initiative: ", current->name);
-        scanf("%i", &current->init);
+        // scanf("%i", &current->init);
+        
+        checkIntegerInputs(&current->init);
         current = current->next;
     }
     return;
+}
+
+void checkIntegerInputs(int *numberOf)
+{
+    int check = 1;    
+    while(check == 1)
+    {
+        if (scanf("%d", numberOf) != 1 || *numberOf < 0)
+        {
+            getchar();
+            printf("Error - must be a positive integer: ");
+        }
+        else
+        {
+            check++;
+        }
+    }
 }
 
 part *createNode(struct part *enemy)

@@ -6,6 +6,7 @@
         "time.h": "c",
         "proficiencies.h": "c",
         "typeinfo": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "stdbool.h": "c"
     }
 }
