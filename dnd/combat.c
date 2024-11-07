@@ -51,6 +51,7 @@ part *combatants[initSpread];
 
 /* Function Prototypes*/
 void setInitiative(struct part *person, int size);
+void addToInitiativeOrder(part *pAddition, part *tail, int numAddition);
 void makeListofCombatants(struct part *head);
 void printCurrentTurn(struct part *head);
 void printInitOrder(struct part *head);
@@ -80,8 +81,9 @@ int main(void)
 
     /* Assign player and unique initiative */
     setInitiative(&ravi, numPlayer);
-    printf("\nEnd acquiring player character information\n");
-    printf("\nBegin acquiring enemy information\n");
+    printf("\n*** End acquiring player character information ***\n");
+    
+    printf("\n*** Begin acquiring enemy information ***\n");
 
     part *newEnemy;
     
@@ -100,56 +102,25 @@ int main(void)
     {
         printf("%s's initiative: ", orc.name);
         checkIntegerInputs(&orc.init);
-        *combatants[orc.init] = orc;
-    }
 
-    for(int i = 0; i < numOrc - 1; i++)
-    {
-        if(numOrc <= 1) /* Case for no enemies of a given type */
-        {
-            break;
-        }
-        newEnemy = createNode(&orc);
-        tail->next = newEnemy;
-        tail = newEnemy;
+        addToInitiativeOrder(&orc, tail, numOrc);
     }
 
     if (0 < numOrog)
     {
         printf("%s's initiative: ", orog.name);
         checkIntegerInputs(&orog.init);
-        // combatants[orog.init]= &orog;
-    }
-
-    for(int i = 0; i < numOrog - 1; i++)
-    {
-        if(numOrog <= 1)
-        {
-            break;
-        }
-        newEnemy = createNode(&orog);
-        tail->next = newEnemy;
-        tail = newEnemy;
+        addToInitiativeOrder(&orog, tail, numOrog);
     }
 
     if (0 < numMagmin)
     {
         printf("%s's initiative: ", magmin.name);
         checkIntegerInputs(&magmin.init);
-        // combatants[magmin.init]= &magmin;
+        addToInitiativeOrder(&magmin, tail, numMagmin);
     }
     
-    for(int i = 0; i < numMagmin - 1; i++)
-    {
-        if(numMagmin <= 1)
-        {
-            break;
-        }
-        newEnemy = createNode(&magmin);
-        tail->next = newEnemy;
-        tail = newEnemy;
-    }
-    printf("\nEnd acquiring enemy information\n\n");
+    printf("\n*** End acquiring enemy information ***\n\n");
 
     /* Count total combatants */
     part *tempCount = head;
@@ -239,6 +210,7 @@ void setInitiative(struct part *person, int size)
         // scanf("%i", &current->init);
         
         checkIntegerInputs(&current->init);
+        combatants[current->init] = current;
         current = current->next;
     }
     return;
@@ -264,7 +236,7 @@ void checkIntegerInputs(int *numberOf)
 part *createNode(struct part *enemy)
 {
     part *new = malloc(sizeof(part));
-    if (new == NULL){
+    if (NULL == new){
         return NULL;
     }
 
@@ -297,7 +269,42 @@ part *createNode(struct part *enemy)
         new->next = NULL;
         combatants[magmin.init]->next = new;
     }
+    else
+    {
+
+    }
     return new;
+}
+
+void addToInitiativeOrder(part *pAddition, part *tail, int numAddition)
+{
+    part *temp = NULL;
+    part *newEnemy = NULL;
+    if(NULL == combatants[pAddition->init])
+    {
+        combatants[pAddition->init] = pAddition;
+    }
+    else
+    {
+        temp = combatants[pAddition->init];
+        while(NULL == temp->next)
+        {
+            temp = temp->next;
+        }
+        temp = pAddition;
+        temp = NULL;
+    }
+    
+    temp = pAddition;
+
+    for(int i = 0; i < numAddition - 1; i++)
+    {
+        newEnemy = createNode(&orc);
+        temp->next = newEnemy;
+        temp = newEnemy;
+        tail->next = newEnemy;
+        tail = newEnemy;
+    }
 }
 
 void makeListofCombatants(struct part *head) /* Array of combatants by initiative order, use this for printing */
