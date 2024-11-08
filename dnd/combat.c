@@ -14,6 +14,7 @@ typedef struct part{
     int turnCount;
     int ac;
     int hp;
+    bool isMalloc;
     struct part *next;
 }part;
 
@@ -26,20 +27,20 @@ part enemies[] = {{"Orc", false, 0, 0, 0, 13, 15, NULL}, {"Orog", false, 0, 0, 0
 part orc = {"Orc", false, 0, 0, 0, 13, 15, NULL};
 
 /* Orog Enemies */
-part orog = {"Orog", false, 0, 0, 0, 18, 53, &orc};
+part orog = {"Orog", false, 0, 0, 0, 18, 53, false, NULL};
 
 /* Magmin Enemies */
-part magmin = {"Magmin", false, 0, 0, 0, 15, 9, &orog};
+part magmin = {"Magmin", false, 0, 0, 0, 15, 9, false, NULL};
 
 /* Linked list of unique part stats */
-part ildmane = {"ildmane", true, 0, 0, 0, 18, 162, &magmin};
-part okssort = {"okssort", true, 0, 0, 0, 17, 162, &ildmane};
+part ildmane = {"ildmane", true, 0, 0, 0, 18, 162, false, NULL};
+part okssort = {"okssort", true, 0, 0, 0, 17, 162, false, NULL};
 
 /* Linked list of player stats */
-part theon = {"theon", true, 0, 0, 0,16, 55, &okssort};
-part pax = {"pax", true, 0, 0, 0, 16, 57, &theon};
-part finn = {"finn", true, 0, 0, 0, 15, 36, &pax};
-part ravi = {"ravi", true, 0, 0, 0, 16, 34, &finn};
+part theon = {"theon", true, 0, 0, 0,16, 55, false, NULL};
+part pax = {"pax", true, 0, 0, 0, 16, 57, false, NULL};
+part finn = {"finn", true, 0, 0, 0, 15, 36, false, NULL};
+part ravi = {"ravi", true, 0, 0, 0, 16, 34, false, NULL};
 
 /* Global Variables*/
 #define initSpread 30
@@ -50,28 +51,26 @@ int numCombatants = 1;
 part *combatants[initSpread];
 
 /* Function Prototypes*/
-void setInitiative(struct part *person, int size);
-void addToInitiativeOrder(part *pAddition, part *tail, int numAddition);
-void makeListofCombatants(struct part *head);
-void printCurrentTurn(struct part *head);
-void printInitOrder(struct part *head);
+void setPlayerInitiative(struct part *person);
+void addToInitiativeOrder(part *pAddition, int numAddition);
+void countCombatants(int x);
+void makeListofCombatants();
+void printCurrentTurn();
+void printInitOrder();
 part *createNode(struct part *enemy);
-void dealDamage(struct part *head, int init, int count, int amount);
+void dealDamage(int init, int count, int amount);
 
 void checkIntegerInputs(int *numberOf);
 
 int main(void)
 {
-    int numOrc = 0, numOrog = 0, numMagmin = 0, numPlayer = 4, numGiant = 2, damaged = 0, damAmount = 0, damInit = 0;
+    int numOrc = 0, numOrog = 0, numMagmin = 0, numGiant = 2, damaged = 0, damAmount = 0, damInit = 0;
     char event = ' ';
     /*
     d = damage
     e = end
     */
     bool combat = true;
-
-    part *head = &ravi;
-    part *tail = &orc;
     
     for(int i = 0; i < initSpread; i++){
         combatants[i] = NULL;
@@ -80,7 +79,13 @@ int main(void)
     printf("\nBegin acquiring player character information\n");
 
     /* Assign player and unique initiative */
-    setInitiative(&ravi, numPlayer);
+    printf("ravi\n");
+    setPlayerInitiative(&ravi);
+    printf("finn\n");
+    setPlayerInitiative(&finn);
+    setPlayerInitiative(&pax);
+    setPlayerInitiative(&theon);
+
     printf("\n*** End acquiring player character information ***\n");
     
     printf("\n*** Begin acquiring enemy information ***\n");
@@ -102,58 +107,32 @@ int main(void)
     {
         printf("%s's initiative: ", orc.name);
         checkIntegerInputs(&orc.init);
-
-        addToInitiativeOrder(&orc, tail, numOrc);
+        addToInitiativeOrder(&orc, numOrc);
+        countCombatants(numOrc);
     }
 
     if (0 < numOrog)
     {
         printf("%s's initiative: ", orog.name);
         checkIntegerInputs(&orog.init);
-        addToInitiativeOrder(&orog, tail, numOrog);
+        addToInitiativeOrder(&orog, numOrog);
+        countCombatants(numOrog);
     }
 
     if (0 < numMagmin)
     {
         printf("%s's initiative: ", magmin.name);
         checkIntegerInputs(&magmin.init);
-        addToInitiativeOrder(&magmin, tail, numMagmin);
+        addToInitiativeOrder(&magmin, numMagmin);
+        countCombatants(numMagmin);
     }
     
     printf("\n*** End acquiring enemy information ***\n\n");
 
-    /* Count total combatants */
-    part *tempCount = head;
-    // tempCount = head; blacked out for testing, don't think I need this at all
-    while(tempCount != NULL)
-    {
-        if (tempCount->next == NULL)
-        {
-            numCombatants++;
-            tempCount = tempCount->next;
-            break;
-        }
-        else if (tempCount->init < tempCount->next->init)
-        {
-            highestInit = tempCount->next->init;
-        }
-        tempCount = tempCount->next;
-        numCombatants++;
-    }
+    
 
-    for(int i = 0; i < highestInit; i++)
-    {
-        combatants[i] = NULL;
-    }
-   
-    // makeListofCombatants(head); DEBUG - blacked out to test not using it
-
-    // for(int i = initSpread; i < 0; i--){
-
-    // }
-
-    printInitOrder(head);
-    printCurrentTurn(head);
+    printInitOrder();
+    // printCurrentTurn();
 
  /* Main loop for combat */
     while (combat == true){
@@ -167,8 +146,8 @@ int main(void)
             scanf("%i", &damaged);
             printf("How much damage: ");
             scanf("%i", &damAmount);
-            dealDamage(head, damInit, damaged, damAmount);
-            printInitOrder(head);
+            dealDamage(damInit, damaged, damAmount);
+            printInitOrder();
             break;
             case 'e':            
             printf("\n********** Combat Over **********\n\n");
@@ -176,7 +155,7 @@ int main(void)
             break;
             case 'n':
             printf("Next Turn\n");
-            printCurrentTurn(head);            
+            // printCurrentTurn();            
             break;
             default:
             printf("Invalid Choice: d for damage\ne for end combat\nn for next turn\n");
@@ -197,22 +176,18 @@ int main(void)
     return 0;
 }
 
-void setInitiative(struct part *person, int size)
+void setPlayerInitiative(struct part *person)
 {
-    part *current = person;
+    printf("%s's initiative: ", person->name);
+    
+    checkIntegerInputs(&person->init);
 
-    while (current->next != NULL){
-        if (current->uniqueChar == false)
-        {
-            break;
-        }
-        printf("%s's initiative: ", current->name);
-        // scanf("%i", &current->init);
-        
-        checkIntegerInputs(&current->init);
-        combatants[current->init] = current;
-        current = current->next;
+    if (0 != person->init)
+    {
+        numCombatants++;
     }
+    //combatants[person->init] = person;
+    addToInitiativeOrder(person, 1);
     return;
 }
 
@@ -230,6 +205,14 @@ void checkIntegerInputs(int *numberOf)
         {
             check++;
         }
+    }
+}
+
+void countCombatants(int x)
+{
+    if (x > 0)
+    {
+        numCombatants = numCombatants + x;
     }
 }
 
@@ -276,7 +259,7 @@ part *createNode(struct part *enemy)
     return new;
 }
 
-void addToInitiativeOrder(part *pAddition, part *tail, int numAddition)
+void addToInitiativeOrder(part *pAddition, int numAddition)
 {
     part *temp = NULL;
     part *newEnemy = NULL;
@@ -286,8 +269,8 @@ void addToInitiativeOrder(part *pAddition, part *tail, int numAddition)
     }
     else
     {
-        temp = combatants[pAddition->init];
-        while(NULL == temp->next)
+        temp = combatants[pAddition->init]->next;
+        while(NULL != temp)
         {
             temp = temp->next;
         }
@@ -295,52 +278,21 @@ void addToInitiativeOrder(part *pAddition, part *tail, int numAddition)
         temp = NULL;
     }
     
-    temp = pAddition;
-
-    for(int i = 0; i < numAddition - 1; i++)
+    if (temp->uniqueChar == false)
     {
-        newEnemy = createNode(&orc);
-        temp->next = newEnemy;
-        temp = newEnemy;
-        tail->next = newEnemy;
-        tail = newEnemy;
-    }
-}
-
-void makeListofCombatants(struct part *head) /* Array of combatants by initiative order, use this for printing */
-{    
-    part *temp = head;
-    part *tempLoop;
-    int tempInit = 0;
-    // printf("%i\n",temp->init);
-    while(temp != NULL)
-    {
-        tempInit = 0;
-        if(combatants[temp->init] == NULL)
+        temp = pAddition;
+        for(int i = 0; i < numAddition - 1; i++)
         {
-            tempInit = temp->init;
-            combatants[tempInit] = temp;
-            temp = temp->next; /* Save spot in loop through head */
-            combatants[tempInit]->next = NULL; /* Make array->next NULL */
+            newEnemy = createNode(&orc);
+            temp->next = newEnemy;
+            temp = newEnemy;
         }
-        else /* combatants[initiative] is occupied so make a linked list */
-        {
-            tempInit = temp->init;  /* Save initiative number */
-            tempLoop = combatants[temp->init]; /* Set tempLoop to ->next of the current combatants[initiative]*/
-            while(tempLoop != NULL){ /* Loop through tempLoop (linked list in current array position) until at the next empty position */
-                tempLoop = tempLoop->next;
-            }
-            tempLoop = temp; /* Set empty position to the current combatant */
-            temp = temp->next; /* Set current combatant to the next one in the head list */
-            tempLoop->next = NULL; /* set combatants[] last position to NULL */
-        }        
     }
 }
 
-
-void printCurrentTurn(struct part *head)
+void printCurrentTurn()
 {
-    part *temp = head;
+    part *temp;
     int count = 1;
 
     if (roundCount == 0 && currentInit == 0)
@@ -375,56 +327,34 @@ void printCurrentTurn(struct part *head)
     }
     printf("%s's turn\n", temp->name);
     temp->turnCount++;
-    temp = head;
     return;
 }
 
-void printInitOrder(struct part *head)
+void printInitOrder()
 {
-    // part *temp = head;
-    part *temp;
-    int count = 1;
     printf("\n****** Intiative Order Start******\n\n");
 
-    for(int i = initSpread; i > 0; i--){
-        count = 1;
+    part *temp = NULL;
+    int count = 1;
+    for (int i = highestInit; i >= 0; i--)
+    {
         temp = combatants[i];
-        if(/*combatants[i] != NULL*/ temp != NULL){
-            // printf("%i-%i. %s, AC: %i, HP: %i\n", combatants[i]->init, count, combatants[i]->name, combatants[i]->ac, combatants[i]->hp);
-            // combatants[i]->initSpot = count;
-            // count++;
-            
-            while(temp != NULL){                
-                printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
-                temp->initSpot = count;
-                count++;     
-                temp = temp->next;           
-            }
+        while(temp != NULL)
+        {
+            printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
+            temp->initSpot = count;
+            count++;     
+            temp = temp->next;
         }
     }
 
-    // for(int i = initSpread; i > 0; i--)
-    // {
-    //     count = 1;
-    //     while (temp != NULL)
-    //     {
-    //         if (temp->init == i && temp->hp > 0) /* Does the given combatant's initiative match i? If yes, print */
-    //         {
-    //             printf("%i-%i. %s, AC: %i, HP: %i\n", temp->init, count, temp->name, temp->ac, temp->hp);
-    //             temp->initSpot = count;
-    //             count++;
-    //         }
-    //         temp = temp->next;
-    //     }
-    //     temp = head;
-    // }
     printf("\n****** Intiative Order End ******\n");
     return;
 }
 
-void dealDamage(struct part *head, int init, int count, int amount)
+void dealDamage(int init, int count, int amount)
 {
-    part *temp = head;
+    part *temp;
     int counter = 1;
 
     while (temp != NULL)
